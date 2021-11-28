@@ -16,7 +16,7 @@ public class ErroCliente {
 
 	static final String CLIENTE_JA_CADASTRADO = "O cliente %s nome %s já esta cadastrado";
 
-	public static ResponseEntity<CustomErrorType> erroClienteNaoEnconrtrado(long id) {
+	public static ResponseEntity<CustomErrorType> erroClienteNaoEncontrado(long id) {
 		return new ResponseEntity<CustomErrorType>(new CustomErrorType(String.format(ErroCliente.CLIENTE_NAO_CASTRADO, id)),
 				HttpStatus.NOT_FOUND);
 	}

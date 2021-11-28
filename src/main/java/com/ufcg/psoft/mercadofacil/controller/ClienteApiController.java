@@ -60,7 +60,7 @@ public class ClienteApiController {
 		Optional<Cliente> clienteOp = clienteService.getClienteById(id);
 	
 		if (!clienteOp.isPresent()) {
-			return ErroCliente.erroClienteNaoEnconrtrado(id);
+			return ErroCliente.erroClienteNaoEncontrado(id);
 		}
 		
 		return new ResponseEntity<Cliente>(clienteOp.get(), HttpStatus.OK);
@@ -72,7 +72,7 @@ public class ClienteApiController {
 		Optional<Cliente> clienteOp = clienteService.getClienteById(id);
 		
 		if (!clienteOp.isPresent()) {
-			return ErroCliente.erroClienteNaoEnconrtrado(id);
+			return ErroCliente.erroClienteNaoEncontrado(id);
 		}
 		
 		Cliente cliente = clienteOp.get();
@@ -89,7 +89,7 @@ public class ClienteApiController {
 		Optional<Cliente> clienteOp = clienteService.getClienteById(id);
 		
 		if (!clienteOp.isPresent()) {
-			return ErroCliente.erroClienteNaoEnconrtrado(id);
+			return ErroCliente.erroClienteNaoEncontrado(id);
 		}
 				
 		clienteService.removerClienteCadastrado(clienteOp.get());

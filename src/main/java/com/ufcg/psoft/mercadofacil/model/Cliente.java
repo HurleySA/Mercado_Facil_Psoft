@@ -37,8 +37,16 @@ public class Cliente {
 		return CPF;
 	}
 
+	public void setCPF(Long cpf){
+		this.CPF = cpf;
+	}
+
 	public String getNome() {
 		return nome;
+	}
+
+	public void setNome(String nome){
+		this.nome = nome;
 	}
 
 	public Integer getIdade() {
