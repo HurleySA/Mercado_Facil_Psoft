@@ -11,7 +11,8 @@ produto do supermercado;
 - Eu, como administrador, gostaria de atribuir um preço (R$) a um determinado
 produto no sistema;
 - Eu, como administrador, gostaria de criar lotes associados aos produtos,
-informando a quantidade de itens disponíveis e a data de validade.
+informando a quantidade de itens disponíveis e a data de validade;
+- Eu, como administrador, gostaria de fazer um CRUD de cliente no sistema.
 
 ## Estrutura básica
 

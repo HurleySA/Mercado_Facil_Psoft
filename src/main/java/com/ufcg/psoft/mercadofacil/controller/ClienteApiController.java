@@ -26,25 +26,25 @@ public class ClienteApiController {
 
 	@Autowired
 	ClienteService clienteService;
-	
+
 	@RequestMapping(value = "/clientes", method = RequestMethod.GET)
 	public ResponseEntity<?> listarClientes() {
-		
+
 		List<Cliente> clientes = clienteService.listarClientes();
-		
+
 		if (clientes.isEmpty()) {
 			return ErroCliente.erroSemClientesCadastrados();
 		}
-		
+
 		return new ResponseEntity<List<Cliente>>(clientes, HttpStatus.OK);
 	}
-	
+
 	@RequestMapping(value = "/cliente/", method = RequestMethod.POST)
 	public ResponseEntity<?> criarCliente(@RequestBody ClienteDTO clienteDTO, UriComponentsBuilder ucBuilder) {
 
 		Optional<Cliente> clienteOp = clienteService.getClienteByCPF(clienteDTO.getCPF());
-		
-		if (!clienteOp.isEmpty()) {
+
+		if (!clienteOp.isPresent()) {
 			return ErroCliente.erroClienteJaCadastrado(clienteDTO);
 		}
 
@@ -58,21 +58,21 @@ public class ClienteApiController {
 	public ResponseEntity<?> consultarCliente(@PathVariable("id") long id) {
 
 		Optional<Cliente> clienteOp = clienteService.getClienteById(id);
-	
+
 		if (!clienteOp.isPresent()) {
-			return ErroCliente.erroClienteNaoEncontrado(id);
+			return ErroCliente.erroClienteNaoEnconrtrado(id);
 		}
-		
+
 		return new ResponseEntity<Cliente>(clienteOp.get(), HttpStatus.OK);
 	}
-	
+
 	@RequestMapping(value = "/cliente/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<?> atualizarCliente(@PathVariable("id") long id, @RequestBody ClienteDTO clienteDTO) {
 
 		Optional<Cliente> clienteOp = clienteService.getClienteById(id);
 		
 		if (!clienteOp.isPresent()) {
-			return ErroCliente.erroClienteNaoEncontrado(id);
+			return ErroCliente.erroClienteNaoEnconrtrado(id);
 		}
 		
 		Cliente cliente = clienteOp.get();
@@ -89,7 +89,7 @@ public class ClienteApiController {
 		Optional<Cliente> clienteOp = clienteService.getClienteById(id);
 		
 		if (!clienteOp.isPresent()) {
-			return ErroCliente.erroClienteNaoEncontrado(id);
+			return ErroCliente.erroClienteNaoEnconrtrado(id);
 		}
 				
 		clienteService.removerClienteCadastrado(clienteOp.get());

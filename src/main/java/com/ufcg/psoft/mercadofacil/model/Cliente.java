@@ -20,7 +20,7 @@ public class Cliente {
 
 	private String endereco;
 
-	private Cliente() {}
+	public Cliente() {}
 
 	public Cliente(Long cpf, String nome, Integer idade, String endereco) {
 		this.CPF = cpf;
@@ -37,16 +37,8 @@ public class Cliente {
 		return CPF;
 	}
 
-	public void setCPF(Long cpf){
-		this.CPF = cpf;
-	}
-
 	public String getNome() {
 		return nome;
-	}
-
-	public void setNome(String nome){
-		this.nome = nome;
 	}
 
 	public Integer getIdade() {

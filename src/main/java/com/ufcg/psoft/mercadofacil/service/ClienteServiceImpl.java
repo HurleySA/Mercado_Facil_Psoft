@@ -44,8 +44,6 @@ public class ClienteServiceImpl implements ClienteService {
 	}
 
 	public Cliente atualizaCliente(ClienteDTO clienteDTO, Cliente cliente) {
-		cliente.setCPF(clienteDTO.getCPF());
-		cliente.setNome(clienteDTO.getNome());
 		cliente.setIdade(clienteDTO.getIdade());
 		cliente.setEndereco(clienteDTO.getEndereco());
 		
