@@ -77,16 +77,20 @@ public class CarrinhoApiController {
 
         Optional<Resumo> resumoProduto = resumoService.getResumoByProduto(produto);
         int total = loteService.getTotalByProduto(produto).get();
-        if(numItens > total){
-            return new ResponseEntity<CustomErrorType>(new CustomErrorType("NÃO HÁ TANTAS UNIDADES DISPONÍVEL"), HttpStatus.CONFLICT);
-        }
-        if(resumoProduto.isPresent()){
-            return new ResponseEntity<CustomErrorType>(new CustomErrorType("RESUMO JÁ CADASTRADO"), HttpStatus.CONFLICT);
-        }
 
         if(!produto.isDisponivel()){
             return new ResponseEntity<CustomErrorType>(new CustomErrorType("PRODUTO NÃO DISPONÍVEL"), HttpStatus.CONFLICT);
         }
+
+        if(resumoProduto.isPresent()){
+            return new ResponseEntity<CustomErrorType>(new CustomErrorType("RESUMO JÁ CADASTRADO"), HttpStatus.CONFLICT);
+        }
+        if(numItens > total){
+            return new ResponseEntity<CustomErrorType>(new CustomErrorType("NÃO HÁ TANTAS UNIDADES DISPONÍVEL"), HttpStatus.CONFLICT);
+        }
+
+
+
 
         Resumo resumo = resumoService.criaResumo(numItens, produto);
         resumoService.salvarResumo(resumo);
@@ -118,12 +122,18 @@ public class CarrinhoApiController {
         Produto produto = optionalProduto.get();
 
         Optional<Resumo> optionalResumo = resumoService.getResumoByProduto(produto);
-        Resumo resumo = optionalResumo.get();
 
-        clienteService.removerResumosCliente(resumo, cliente);
-        clienteService.salvarClienteCadastrado(cliente);
 
-        resumoService.removerResumo(resumo);
+        if(!optionalResumo.isPresent() ||  cliente.getCarrinho().getResumosPedidos().size() == 0  || !cliente.getCarrinho().getResumosPedidos().contains(optionalResumo.get())){
+            return new ResponseEntity<CustomErrorType>(new CustomErrorType("NÃO TEM O ITEM NO CARRINHO."), HttpStatus.CONFLICT);
+        }else{
+            Resumo resumo = optionalResumo.get();
+            clienteService.removerResumosCliente(resumo, cliente);
+            clienteService.salvarClienteCadastrado(cliente);
+            resumoService.removerResumo(resumo);
+
+        }
+
 
 
 
