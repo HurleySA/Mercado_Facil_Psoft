@@ -20,6 +20,9 @@ public class ResumoServiceImpl implements ResumoService {
     public Optional<Resumo> getResumoById(long id) { return resumoRepository.findById(id);
     }
 
+    public Resumo getResumoByProduto(Produto produto) { return resumoRepository.findByProduto(produto);
+    }
+
     public List<Resumo> listarResumos() {
         return resumoRepository.findAll();
     }

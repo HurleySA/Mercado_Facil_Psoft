@@ -10,6 +10,8 @@ public interface ResumoService {
 
     public Optional<Resumo> getResumoById(long id);
 
+    public Resumo getResumoByProduto(Produto produto);
+
     public List<Resumo> listarResumos();
 
     public void salvarResumo(Resumo resumo);
@@ -17,4 +19,6 @@ public interface ResumoService {
     public void removerResumo(Resumo resumo);
 
     public Resumo criaResumo(int numItens, Produto produto);
+
+
 }

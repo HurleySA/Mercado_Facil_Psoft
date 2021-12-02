@@ -44,7 +44,7 @@ public class ClienteApiController {
 
 		Optional<Cliente> clienteOp = clienteService.getClienteByCPF(clienteDTO.getCPF());
 
-		if (!clienteOp.isPresent()) {
+		if (clienteOp.isPresent()) {
 			return ErroCliente.erroClienteJaCadastrado(clienteDTO);
 		}
 

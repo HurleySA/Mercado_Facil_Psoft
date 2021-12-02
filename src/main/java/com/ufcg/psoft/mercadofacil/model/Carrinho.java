@@ -11,45 +11,38 @@ public class Carrinho {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Resumo> resumosPedidos = new ArrayList<>();
 
-    @OneToOne
-    private Cliente cliente;
-
     public Carrinho(){
-
+        this.resumosPedidos = new ArrayList<>();
     }
 
-    public Carrinho(List<Resumo> resumosPedidos, Cliente cliente) {
+    public Carrinho(List<Resumo> resumosPedidos) {
         this.resumosPedidos = resumosPedidos;
-        this.cliente = cliente;
     }
 
     public Long getId() {
         return id;
     }
+
     public List<Resumo> getResumosPedidos() {
         return resumosPedidos;
     }
 
+    public void adicionaResumo(Resumo resumo) { resumosPedidos.add(resumo);}
+
+    public void removeResumo(Resumo resumo) { resumosPedidos.remove(resumo);}
+
+
     public void setResumosPedidos(List<Resumo> resumosPedidos) {
         this.resumosPedidos = resumosPedidos;
-    }
-
-    public Cliente getCliente() {
-        return cliente;
-    }
-
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
     }
 
     @Override
     public String toString() {
         return "Carrinho{" +
                 "resumosPedidos=" + resumosPedidos +
-                ", cliente=" + cliente +
                 '}';
     }
 }

@@ -3,6 +3,7 @@ package com.ufcg.psoft.mercadofacil.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.ufcg.psoft.mercadofacil.model.Resumo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,4 +50,19 @@ public class ClienteServiceImpl implements ClienteService {
 		
 		return cliente;
 	}
+
+	public Cliente atualizaResumosCliente(Resumo resumo, Cliente cliente) {
+		cliente.adicionaResumo(resumo);
+
+		return cliente;
+	}
+
+	@Override
+	public Cliente removerResumosCliente(Resumo resumo, Cliente cliente) {
+		cliente.removeResumo(resumo);
+
+		return cliente;
+	}
+
+
 }

@@ -1,5 +1,7 @@
 package com.ufcg.psoft.mercadofacil.DTO;
 
+import com.ufcg.psoft.mercadofacil.model.Carrinho;
+
 public class ClienteDTO {
 
 	private Long cpf;
@@ -9,6 +11,8 @@ public class ClienteDTO {
 	private Integer idade;
 
 	private String endereco;
+
+	private Carrinho carrinho;
 
 	public String getNome() {
 		return nome;
@@ -22,7 +26,8 @@ public class ClienteDTO {
 		return idade;
 	}
 
-	public String getEndereco() {
-		return endereco;
-	}
+	public String getEndereco() { return endereco; }
+
+	public Carrinho getCarrinho() { return carrinho;}
+
 }

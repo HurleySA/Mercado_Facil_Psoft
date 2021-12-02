@@ -4,9 +4,13 @@ import java.util.List;
 import java.util.Optional;
 
 import com.ufcg.psoft.mercadofacil.model.Carrinho;
+import com.ufcg.psoft.mercadofacil.model.Cliente;
+import com.ufcg.psoft.mercadofacil.model.Produto;
 import com.ufcg.psoft.mercadofacil.model.Resumo;
 import com.ufcg.psoft.mercadofacil.service.CarrinhoService;
+import com.ufcg.psoft.mercadofacil.service.ProdutoService;
 import com.ufcg.psoft.mercadofacil.service.ResumoService;
+import com.ufcg.psoft.mercadofacil.util.ErroCliente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,59 +23,92 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ufcg.psoft.mercadofacil.util.ErroLote;
 import com.ufcg.psoft.mercadofacil.util.ErroProduto;
-import com.ufcg.psoft.mercadofacil.service.CarrinhoService;
+import com.ufcg.psoft.mercadofacil.service.ClienteService;
 
 @RestController
 @RequestMapping("/api")
 @CrossOrigin
 public class CarrinhoApiController {
 
-    CarrinhoService carrinhoService;
+    @Autowired
+    ClienteService clienteService;
+
+    @Autowired
+    ProdutoService produtoService;
 
     @Autowired
     ResumoService resumoService;
 
 
-    @RequestMapping(value = "/carrinho", method = RequestMethod.GET)
-    public ResponseEntity<?> listarCarrinho() {
+    @RequestMapping(value = "/carrinho/{idCliente}", method = RequestMethod.GET)
+    public ResponseEntity<?> consultaCarrinho(@PathVariable("idCliente") long idCliente) {
 
-        List<Resumo> carrinho = carrinhoService.listarCarrinho();
+        Optional<Cliente> cliente = clienteService.getClienteById(idCliente);
 
-        if (carrinho.isEmpty()) {
-            return ErroLote.erroSemLotesCadastrados();
+        if (!cliente.isPresent()) {
+            return ErroCliente.erroClienteNaoEnconrtrado(idCliente);
         }
+        Carrinho carrinho = cliente.get().getCarrinho();
+        List<Resumo> resumos = carrinho.getResumosPedidos();
 
-        return new ResponseEntity<List<Resumo>>(carrinho, HttpStatus.OK);
+
+        return new ResponseEntity<List<Resumo>>(resumos, HttpStatus.OK);
 
     }
 
-    @RequestMapping(value = "/carrinho/{idResumo}", method = RequestMethod.POST)
-    public ResponseEntity<?> adicionaResumo(@PathVariable("idResumo") long id) {
+    @RequestMapping(value = "/carrinho/{idCliente}/{idProduto}", method = RequestMethod.PUT)
+    public ResponseEntity<?> adicionaAoCarrinho(@PathVariable("idCliente") long idCliente, @PathVariable("idProduto") long idProduto, @RequestBody int numItens) {
 
-        Optional<Resumo> optionalResumo = resumoService.getResumoById(id);
+        Optional<Cliente> optionalCliente = clienteService.getClienteById(idCliente);
 
-        if (!optionalResumo.isPresent()) {
-            return ErroProduto.erroProdutoNaoEnconrtrado(id);
+        if (!optionalCliente.isPresent()) {
+            return ErroCliente.erroClienteNaoEnconrtrado(idCliente);
         }
+        Cliente cliente = optionalCliente.get();
 
-        Resumo resumo = optionalResumo.get();
-        carrinhoService.adicionarResumo(resumo);
+        Optional<Produto> optionalProduto = produtoService.getProdutoById(idProduto);
 
-        return new ResponseEntity<>(resumo, HttpStatus.CREATED);
+        if (!optionalProduto.isPresent()) {
+            return ErroProduto.erroProdutoNaoEnconrtrado(idProduto);
+        }
+        Produto produto = optionalProduto.get();
+
+        Resumo resumo = resumoService.criaResumo(numItens, produto);
+        resumoService.salvarResumo(resumo);
+
+        clienteService.atualizaResumosCliente(resumo, cliente);
+        clienteService.salvarClienteCadastrado(cliente);
+
+        return new ResponseEntity<Cliente>(cliente, HttpStatus.OK);
+
     }
 
-    @RequestMapping(value = "/carrinho/{idResumo}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> removeResumo(@PathVariable("idResumo") long id) {
+    /**@RequestMapping(value = "/carrinho/{idCliente}/{idProduto}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> removeDoCarrinho(@PathVariable("idCliente") long idCliente, @PathVariable("idProduto") long idProduto){
 
-        Optional<Resumo> optionalResumo = resumoService.getResumoById(id);
+        Optional<Cliente> optionalCliente = clienteService.getClienteById(idCliente);
 
-        if (!optionalResumo.isPresent()) {
-            return ErroProduto.erroProdutoNaoEnconrtrado(id);
+        if (!optionalCliente.isPresent()) {
+            return ErroCliente.erroClienteNaoEnconrtrado(idCliente);
+        }
+        Cliente cliente = optionalCliente.get();
+
+        Optional<Produto> optionalProduto = produtoService.getProdutoById(idProduto);
+
+        if (!optionalProduto.isPresent()) {
+            return ErroProduto.erroProdutoNaoEnconrtrado(idProduto);
         }
 
-        Resumo resumo = optionalResumo.get();
-        carrinhoService.removerResumoCadastrado(resumo);
+        Produto produto = optionalProduto.get();
 
-        return new ResponseEntity<>(resumo, HttpStatus.OK);
+        Resumo resumo = resumoService.getResumoByProduto(produto);
+        resumoService.removerResumo(resumo);
+
+
+
+        return new ResponseEntity<Resumo>(resumo, HttpStatus.OK);
     }
+*/
+
+
 }

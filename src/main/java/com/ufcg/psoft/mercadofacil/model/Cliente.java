@@ -1,9 +1,6 @@
 package com.ufcg.psoft.mercadofacil.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Cliente {
@@ -20,6 +17,9 @@ public class Cliente {
 
 	private String endereco;
 
+	@OneToOne(cascade=CascadeType.ALL)
+	private Carrinho carrinho;
+
 	public Cliente() {}
 
 	public Cliente(Long cpf, String nome, Integer idade, String endereco) {
@@ -27,6 +27,15 @@ public class Cliente {
 		this.nome = nome;
 		this.idade = idade;
 		this.endereco = endereco;
+		this.carrinho = new Carrinho();
+	}
+
+	public Cliente(Long cpf, String nome, Integer idade, String endereco, Carrinho carrinho) {
+		this.CPF = cpf;
+		this.nome = nome;
+		this.idade = idade;
+		this.endereco = endereco;
+		this.carrinho = carrinho;
 	}
 
 	public Long getId() {
@@ -56,4 +65,16 @@ public class Cliente {
 	public void setEndereco(String endereco) {
 		this.endereco = endereco;
 	}
+
+	public Carrinho getCarrinho() {
+		return carrinho;
+	}
+
+	public void setCarrinho(Carrinho carrinho) {
+		this.carrinho = carrinho;
+	}
+
+	public void adicionaResumo(Resumo resumo) {this.carrinho.adicionaResumo(resumo);}
+
+	public void removeResumo(Resumo resumo) {this.carrinho.removeResumo(resumo);}
 }

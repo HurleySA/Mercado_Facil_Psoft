@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.ufcg.psoft.mercadofacil.DTO.ClienteDTO;
 import com.ufcg.psoft.mercadofacil.model.Cliente;
+import com.ufcg.psoft.mercadofacil.model.Resumo;
 
 public interface ClienteService {
 
@@ -21,5 +22,9 @@ public interface ClienteService {
 	public Cliente criaCliente(ClienteDTO clienteDTO);
 	
 	public Cliente atualizaCliente(ClienteDTO clienteDTO, Cliente cliente);
+
+	public Cliente atualizaResumosCliente(Resumo resumo, Cliente cliente);
+
+	public Cliente removerResumosCliente(Resumo resumo, Cliente cliente);
 
 }
