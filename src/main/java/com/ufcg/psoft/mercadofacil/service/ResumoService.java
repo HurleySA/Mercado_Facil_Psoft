@@ -10,7 +10,7 @@ public interface ResumoService {
 
     public Optional<Resumo> getResumoById(long id);
 
-    public Resumo getResumoByProduto(Produto produto);
+    public Optional<Resumo> getResumoByProduto(Produto produto);
 
     public List<Resumo> listarResumos();
 

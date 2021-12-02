@@ -10,6 +10,7 @@ import com.ufcg.psoft.mercadofacil.model.Resumo;
 import com.ufcg.psoft.mercadofacil.service.CarrinhoService;
 import com.ufcg.psoft.mercadofacil.service.ProdutoService;
 import com.ufcg.psoft.mercadofacil.service.ResumoService;
+import com.ufcg.psoft.mercadofacil.util.CustomErrorType;
 import com.ufcg.psoft.mercadofacil.util.ErroCliente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -56,7 +57,7 @@ public class CarrinhoApiController {
 
     }
 
-    @RequestMapping(value = "/carrinho/{idCliente}/{idProduto}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/carrinho/{idCliente}/{idProduto}", method = RequestMethod.POST)
     public ResponseEntity<?> adicionaAoCarrinho(@PathVariable("idCliente") long idCliente, @PathVariable("idProduto") long idProduto, @RequestBody int numItens) {
 
         Optional<Cliente> optionalCliente = clienteService.getClienteById(idCliente);
@@ -73,17 +74,24 @@ public class CarrinhoApiController {
         }
         Produto produto = optionalProduto.get();
 
+        Optional<Resumo> resumoProduto = resumoService.getResumoByProduto(produto);
+
+        if(resumoProduto.isPresent()){
+            return new ResponseEntity<CustomErrorType>(new CustomErrorType("RESUMO JÁ CADASTRADO"), HttpStatus.CONFLICT);
+        }
+
         Resumo resumo = resumoService.criaResumo(numItens, produto);
         resumoService.salvarResumo(resumo);
-
         clienteService.atualizaResumosCliente(resumo, cliente);
         clienteService.salvarClienteCadastrado(cliente);
+
+
 
         return new ResponseEntity<Cliente>(cliente, HttpStatus.OK);
 
     }
 
-    /**@RequestMapping(value = "/carrinho/{idCliente}/{idProduto}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/carrinho/{idCliente}/{idProduto}", method = RequestMethod.DELETE)
     public ResponseEntity<?> removeDoCarrinho(@PathVariable("idCliente") long idCliente, @PathVariable("idProduto") long idProduto){
 
         Optional<Cliente> optionalCliente = clienteService.getClienteById(idCliente);
@@ -101,14 +109,18 @@ public class CarrinhoApiController {
 
         Produto produto = optionalProduto.get();
 
-        Resumo resumo = resumoService.getResumoByProduto(produto);
-        resumoService.removerResumo(resumo);
+        Optional<Resumo> optionalResumo = resumoService.getResumoByProduto(produto);
+        Resumo resumo = optionalResumo.get();
+
+        clienteService.removerResumosCliente(resumo, cliente);
+        clienteService.salvarClienteCadastrado(cliente);
 
 
 
-        return new ResponseEntity<Resumo>(resumo, HttpStatus.OK);
+
+        return new ResponseEntity<Cliente>(cliente, HttpStatus.OK);
     }
-*/
+
 
 
 }
