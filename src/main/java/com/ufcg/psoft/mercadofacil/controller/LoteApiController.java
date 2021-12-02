@@ -2,6 +2,7 @@ package com.ufcg.psoft.mercadofacil.controller;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,6 +41,24 @@ public class LoteApiController {
 			return ErroLote.erroSemLotesCadastrados();
 		}
 		
+		return new ResponseEntity<List<Lote>>(lotes, HttpStatus.OK);
+	}
+	@RequestMapping(value = "/lotes/{idProduto}", method = RequestMethod.GET)
+	public ResponseEntity<?> listarLotesDeProduto(@PathVariable("idProduto") long idProduto) {
+		Optional<Produto> optionalProduto = produtoService.getProdutoById(idProduto);
+
+		if (!optionalProduto.isPresent()) {
+			return ErroProduto.erroProdutoNaoEnconrtrado(idProduto);
+		}
+		Produto produto = optionalProduto.get();
+
+		List<Lote> lotes = loteService.getByProduto(produto);
+
+		if (lotes.isEmpty()) {
+			return ErroLote.erroSemLotesCadastrados();
+		}
+
+
 		return new ResponseEntity<List<Lote>>(lotes, HttpStatus.OK);
 	}
 	

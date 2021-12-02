@@ -2,14 +2,13 @@ package com.ufcg.psoft.mercadofacil.controller;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.ufcg.psoft.mercadofacil.model.Carrinho;
 import com.ufcg.psoft.mercadofacil.model.Cliente;
 import com.ufcg.psoft.mercadofacil.model.Produto;
 import com.ufcg.psoft.mercadofacil.model.Resumo;
-import com.ufcg.psoft.mercadofacil.service.CarrinhoService;
-import com.ufcg.psoft.mercadofacil.service.ProdutoService;
-import com.ufcg.psoft.mercadofacil.service.ResumoService;
+import com.ufcg.psoft.mercadofacil.service.*;
 import com.ufcg.psoft.mercadofacil.util.CustomErrorType;
 import com.ufcg.psoft.mercadofacil.util.ErroCliente;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ufcg.psoft.mercadofacil.util.ErroLote;
 import com.ufcg.psoft.mercadofacil.util.ErroProduto;
-import com.ufcg.psoft.mercadofacil.service.ClienteService;
 
 @RestController
 @RequestMapping("/api")
@@ -39,6 +37,9 @@ public class CarrinhoApiController {
 
     @Autowired
     ResumoService resumoService;
+
+    @Autowired
+    LoteService loteService;
 
 
     @RequestMapping(value = "/carrinho/{idCliente}", method = RequestMethod.GET)
@@ -75,9 +76,16 @@ public class CarrinhoApiController {
         Produto produto = optionalProduto.get();
 
         Optional<Resumo> resumoProduto = resumoService.getResumoByProduto(produto);
-
+        int total = loteService.getTotalByProduto(produto).get();
+        if(numItens > total){
+            return new ResponseEntity<CustomErrorType>(new CustomErrorType("NÃO HÁ TANTAS UNIDADES DISPONÍVEL"), HttpStatus.CONFLICT);
+        }
         if(resumoProduto.isPresent()){
             return new ResponseEntity<CustomErrorType>(new CustomErrorType("RESUMO JÁ CADASTRADO"), HttpStatus.CONFLICT);
+        }
+
+        if(!produto.isDisponivel()){
+            return new ResponseEntity<CustomErrorType>(new CustomErrorType("PRODUTO NÃO DISPONÍVEL"), HttpStatus.CONFLICT);
         }
 
         Resumo resumo = resumoService.criaResumo(numItens, produto);
@@ -115,6 +123,7 @@ public class CarrinhoApiController {
         clienteService.removerResumosCliente(resumo, cliente);
         clienteService.salvarClienteCadastrado(cliente);
 
+        resumoService.removerResumo(resumo);
 
 
 
