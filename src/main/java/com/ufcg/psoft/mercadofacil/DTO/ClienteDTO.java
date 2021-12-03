@@ -16,10 +16,6 @@ public class ClienteDTO {
 
 	private String endereco;
 
-	private Carrinho carrinho;
-
-	private List<Compra> compras;
-
 	public String getNome() {
 		return nome;
 	}
@@ -34,8 +30,5 @@ public class ClienteDTO {
 
 	public String getEndereco() { return endereco; }
 
-	public Carrinho getCarrinho() { return carrinho;}
-
-	public  List<Compra> getCompras(){ return compras;}
 
 }

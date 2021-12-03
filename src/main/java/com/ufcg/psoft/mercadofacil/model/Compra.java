@@ -1,5 +1,7 @@
 package com.ufcg.psoft.mercadofacil.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,13 +15,15 @@ public class Compra {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany
+    @ManyToMany
     private List<Produto> produtos;
+
     private int quantidadeProdutos;
     private String data;
 
     @ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false)
+    @JsonBackReference
     private Cliente cliente;
 
     public Compra() {
@@ -41,6 +45,7 @@ public class Compra {
         this.cliente = cliente;
 
     }
+
 
     public Long getId() {
         return id;

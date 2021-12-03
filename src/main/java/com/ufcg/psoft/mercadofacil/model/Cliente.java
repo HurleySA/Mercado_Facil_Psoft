@@ -1,5 +1,7 @@
 package com.ufcg.psoft.mercadofacil.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +24,9 @@ public class Cliente {
 	@OneToOne(cascade=CascadeType.ALL)
 	private Carrinho carrinho;
 
-	@OneToMany(mappedBy= "cliente")
+
+	@OneToMany(mappedBy="cliente")
+	@JsonManagedReference
 	private List<Compra> compras;
 
 	public Cliente() {}
