@@ -12,7 +12,7 @@ public class Carrinho {
     private Long id;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private List<Resumo> resumosPedidos = new ArrayList<>();
+    private List<Resumo> resumosPedidos;
 
     public Carrinho(){
         this.resumosPedidos = new ArrayList<>();
@@ -45,4 +45,6 @@ public class Carrinho {
                 "resumosPedidos=" + resumosPedidos +
                 '}';
     }
+
+
 }

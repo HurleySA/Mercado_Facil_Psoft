@@ -30,3 +30,6 @@ update produto set IS_DISPONIVEL = TRUE where ID = 10005;
 
 insert into cliente (ID, CPF, NOME, IDADE, ENDERECO, CARRINHO_ID)
 values(1001, 10020030006, 'Fulano', 23, 'Rua tal', 1);
+
+insert into compra (ID, DATA, QUANTIDADE_PRODUTOS, CLIENTE_ID)
+values(25, 03/12/2021, 5, 1001);

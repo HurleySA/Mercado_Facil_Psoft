@@ -1,6 +1,8 @@
 package com.ufcg.psoft.mercadofacil.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Cliente {
@@ -20,6 +22,9 @@ public class Cliente {
 	@OneToOne(cascade=CascadeType.ALL)
 	private Carrinho carrinho;
 
+	@OneToMany(mappedBy= "cliente")
+	private List<Compra> compras;
+
 	public Cliente() {}
 
 	public Cliente(Long cpf, String nome, Integer idade, String endereco) {
@@ -28,14 +33,16 @@ public class Cliente {
 		this.idade = idade;
 		this.endereco = endereco;
 		this.carrinho = new Carrinho();
+		this.compras = new ArrayList<Compra>();
 	}
 
-	public Cliente(Long cpf, String nome, Integer idade, String endereco, Carrinho carrinho) {
+	public Cliente(Long cpf, String nome, Integer idade, String endereco, Carrinho carrinho, List<Compra> compras) {
 		this.CPF = cpf;
 		this.nome = nome;
 		this.idade = idade;
 		this.endereco = endereco;
 		this.carrinho = carrinho;
+		this.compras = compras;
 	}
 
 	public Long getId() {
@@ -77,4 +84,12 @@ public class Cliente {
 	public void adicionaResumo(Resumo resumo) {this.carrinho.adicionaResumo(resumo);}
 
 	public void removeResumo(Resumo resumo) {this.carrinho.removeResumo(resumo);}
+
+	public List<Compra> getCompras() {
+		return compras;
+	}
+
+	public void setCompras(List<Compra> compras) {
+		this.compras = compras;
+	}
 }
