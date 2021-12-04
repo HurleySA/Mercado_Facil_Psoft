@@ -25,6 +25,7 @@ public class Cliente {
 	private Carrinho carrinho;
 
 
+
 	@OneToMany(mappedBy="cliente")
 	@JsonManagedReference
 	private List<Compra> compras;
@@ -95,5 +96,9 @@ public class Cliente {
 
 	public void setCompras(List<Compra> compras) {
 		this.compras = compras;
+	}
+
+	public void limpaCarrinho() {
+		this.carrinho.limpaCarrinho();
 	}
 }

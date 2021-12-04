@@ -3,6 +3,7 @@ package com.ufcg.psoft.mercadofacil.service;
 import java.util.List;
 import java.util.Optional;
 
+import ch.qos.logback.core.net.server.Client;
 import com.ufcg.psoft.mercadofacil.DTO.ClienteDTO;
 import com.ufcg.psoft.mercadofacil.model.Cliente;
 import com.ufcg.psoft.mercadofacil.model.Resumo;
@@ -26,6 +27,8 @@ public interface ClienteService {
 	public Cliente atualizaResumosCliente(Resumo resumo, Cliente cliente);
 
 	public Cliente removerResumosCliente(Resumo resumo, Cliente cliente);
+
+	public Cliente limpaCarrinho(Cliente cliente);
 
 
 }

@@ -4,6 +4,7 @@ import com.ufcg.psoft.mercadofacil.model.Cliente;
 import com.ufcg.psoft.mercadofacil.model.Compra;
 import com.ufcg.psoft.mercadofacil.model.Produto;
 import com.ufcg.psoft.mercadofacil.model.Resumo;
+import com.ufcg.psoft.mercadofacil.service.CarrinhoService;
 import com.ufcg.psoft.mercadofacil.service.ClienteService;
 import com.ufcg.psoft.mercadofacil.service.CompraService;
 import com.ufcg.psoft.mercadofacil.util.CustomErrorType;
@@ -28,17 +29,25 @@ public class CompraApiController {
     @Autowired
     CompraService compraService;
 
+    @Autowired
+    CarrinhoService carrinhoService;
+
     @RequestMapping(value="/compra/{idCliente}", method = RequestMethod.POST)
     public ResponseEntity<?> realizaCompra(@PathVariable("idCliente") long idCliente){
-        Optional<Cliente> cliente = clienteService.getClienteById(idCliente);
+        Optional<Cliente> optionalCliente = clienteService.getClienteById(idCliente);
 
-        if (!cliente.isPresent()) {
+        if (!optionalCliente.isPresent()) {
             return ErroCliente.erroClienteNaoEnconrtrado(idCliente);
         }
-        List<Resumo> resumos = cliente.get().getCarrinho().getResumosPedidos();
-        Compra compra = new Compra(resumos, resumos.size(), "03/12/2021", cliente.get());
+        Cliente cliente = optionalCliente.get();
+        Compra compra = compraService.criaCompra(cliente.getCarrinho().getResumosPedidos(), cliente.getCarrinho().getResumosPedidos().size(), "04/12/2021", cliente);
 
-        return new ResponseEntity<Compra>(compra, HttpStatus.OK);
+        compraService.salvarCompra(compra);
+
+        clienteService.limpaCarrinho(cliente);
+        clienteService.salvarClienteCadastrado(cliente);
+
+        return new ResponseEntity<Compra>(compra, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/compras/{idCliente}", method = RequestMethod.GET)
@@ -58,5 +67,24 @@ public class CompraApiController {
 
     }
 
+    @RequestMapping(value = "/compras/{idCliente}/{idCompra}", method = RequestMethod.GET)
+    public ResponseEntity<?> listaCompras(@PathVariable("idCliente") long idCliente, @PathVariable("idCompra") long idCompra){
+        Optional<Cliente> cliente = clienteService.getClienteById(idCliente);
+
+        if (!cliente.isPresent()) {
+            return ErroCliente.erroClienteNaoEnconrtrado(idCliente);
+        }
+
+        Optional<Compra> compra = compraService.getCompraById(idCompra);
+
+        if (!compra.isPresent()) {
+            return new ResponseEntity<CustomErrorType>(new CustomErrorType("COMPRA NÃO EXISTENTE."), HttpStatus.CONFLICT);
+        }
+
+        if(!cliente.get().getCompras().contains(compra.get())){
+            return new ResponseEntity<CustomErrorType>(new CustomErrorType("COMPRA NÃO PERTENTE AO CLIENTE;"), HttpStatus.CONFLICT);
+        }
+        return new ResponseEntity<Compra>(compra.get(), HttpStatus.OK);
+    }
 
 }

@@ -12,7 +12,7 @@ import java.util.List;
 public class Compra {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToMany
@@ -29,12 +29,10 @@ public class Compra {
     public Compra() {
     }
 
-    public Compra(Cliente cliente) {
+    public Compra(Cliente cliente, String data) {
         this.resumos = cliente.getCarrinho().getResumosPedidos();
         this.quantidadeProdutos = resumos.size();
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-        Date date = new Date();
-        this.data = formatter.format(date);
+        this.data = data;
         this.cliente = cliente;
     }
 
@@ -50,6 +48,7 @@ public class Compra {
     public Long getId() {
         return id;
     }
+
 
     public List<Resumo> getResumos() {
         return resumos;

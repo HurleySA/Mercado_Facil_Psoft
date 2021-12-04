@@ -62,5 +62,11 @@ public class ClienteServiceImpl implements ClienteService {
 		return cliente;
 	}
 
+	@Override
+	public Cliente limpaCarrinho(Cliente cliente) {
+		cliente.limpaCarrinho();
+		return cliente;
+	}
+
 
 }

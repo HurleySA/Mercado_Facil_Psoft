@@ -37,7 +37,7 @@ public class Carrinho {
 
     public void removeResumo(Resumo resumo) { resumosPedidos.remove(resumo);}
 
-
+    public void limpaCarrinho() {resumosPedidos = new ArrayList<>();}
     public void setResumosPedidos(List<Resumo> resumosPedidos) {
         this.resumosPedidos = resumosPedidos;
     }

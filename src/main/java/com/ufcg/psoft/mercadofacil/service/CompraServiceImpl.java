@@ -3,6 +3,7 @@ package com.ufcg.psoft.mercadofacil.service;
 import com.ufcg.psoft.mercadofacil.DTO.CompraDTO;
 import com.ufcg.psoft.mercadofacil.model.Cliente;
 import com.ufcg.psoft.mercadofacil.model.Compra;
+import com.ufcg.psoft.mercadofacil.model.Resumo;
 import com.ufcg.psoft.mercadofacil.repository.CompraRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,8 +24,8 @@ public class CompraServiceImpl implements CompraService{
     }
     public List<Compra> getComprasByCliente(Cliente cliente) {return compraRepository.findByCliente(cliente);}
 
-    public Compra criaCompra(CompraDTO compraDTO){
-        Compra compra = new Compra(compraDTO.getResumos(), compraDTO.getQuantidadeProdutos(), compraDTO.getData(), compraDTO.getCliente() );
+    public Compra criaCompra(List<Resumo> resumos, int quantidadeProdutos, String data,Cliente cliente){
+        Compra compra = new Compra(resumos, quantidadeProdutos, data,cliente);
         return compra;
     }
 
