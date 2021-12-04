@@ -83,28 +83,25 @@ public class CarrinhoApiController {
         }
 
         Optional<Resumo> optionalResumo = resumoService.getResumoByProduto(produto);
+        Resumo resumo;
+        if(optionalResumo.isPresent()){
+            Boolean resumoCadastrado = cliente.getCarrinho().getResumosPedidos().contains(resumoService.getResumoByProduto(produto).get());
+            int total = loteService.getTotalByProduto(produto).get();
 
-        if(!optionalResumo.isPresent()){
-            return new ResponseEntity<CustomErrorType>(new CustomErrorType("NÃO HÁ RESUMO CADASTRADO"), HttpStatus.CONFLICT);
+            if(resumoCadastrado){
+                return new ResponseEntity<CustomErrorType>(new CustomErrorType("RESUMO JÁ CADASTRADO"), HttpStatus.CONFLICT);
+            }
+            if(numItens > total){
+                return new ResponseEntity<CustomErrorType>(new CustomErrorType("NÃO HÁ TANTAS UNIDADES DISPONÍVEL"), HttpStatus.CONFLICT);
+            }
+        }else{
+            resumo = resumoService.criaResumo(numItens, produto);
+            resumoService.salvarResumo(resumo);
+            clienteService.atualizaResumosCliente(resumo, cliente);
+            clienteService.salvarClienteCadastrado(cliente);
         }
-        Boolean resumoCadastrado = cliente.getCarrinho().getResumosPedidos().contains(resumoService.getResumoByProduto(produto).get());
-        int total = loteService.getTotalByProduto(produto).get();
 
 
-        if(resumoCadastrado){
-            return new ResponseEntity<CustomErrorType>(new CustomErrorType("RESUMO JÁ CADASTRADO"), HttpStatus.CONFLICT);
-        }
-        if(numItens > total){
-            return new ResponseEntity<CustomErrorType>(new CustomErrorType("NÃO HÁ TANTAS UNIDADES DISPONÍVEL"), HttpStatus.CONFLICT);
-        }
-
-
-
-
-        Resumo resumo = resumoService.criaResumo(numItens, produto);
-        resumoService.salvarResumo(resumo);
-        clienteService.atualizaResumosCliente(resumo, cliente);
-        clienteService.salvarClienteCadastrado(cliente);
 
 
 

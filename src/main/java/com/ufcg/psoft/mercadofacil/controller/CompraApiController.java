@@ -4,10 +4,7 @@ import com.ufcg.psoft.mercadofacil.model.Cliente;
 import com.ufcg.psoft.mercadofacil.model.Compra;
 import com.ufcg.psoft.mercadofacil.model.Produto;
 import com.ufcg.psoft.mercadofacil.model.Resumo;
-import com.ufcg.psoft.mercadofacil.service.CarrinhoService;
-import com.ufcg.psoft.mercadofacil.service.ClienteService;
-import com.ufcg.psoft.mercadofacil.service.CompraService;
-import com.ufcg.psoft.mercadofacil.service.ResumoService;
+import com.ufcg.psoft.mercadofacil.service.*;
 import com.ufcg.psoft.mercadofacil.util.CustomErrorType;
 import com.ufcg.psoft.mercadofacil.util.ErroCliente;
 import com.ufcg.psoft.mercadofacil.util.ErroProduto;
@@ -36,6 +33,9 @@ public class CompraApiController {
     @Autowired
     ResumoService resumoService;
 
+    @Autowired
+    LoteService loteService;
+
     @RequestMapping(value="/compra/{idCliente}", method = RequestMethod.POST)
     public ResponseEntity<?> realizaCompra(@PathVariable("idCliente") long idCliente){
         Optional<Cliente> optionalCliente = clienteService.getClienteById(idCliente);
@@ -48,6 +48,14 @@ public class CompraApiController {
         if(resumos.isEmpty()){
             return new ResponseEntity<CustomErrorType>(new CustomErrorType("NÃO POSSUI PRODUTOS NO CARRINHO."), HttpStatus.CONFLICT);
         }
+
+        resumos.forEach(resumo -> {
+            if(resumo.getQuantidade() == loteService.getTotalByProduto(resumo.getProduto()).get()){
+                loteService.removerLote(loteService.getLoteByProduto(resumo.getProduto()));
+            }else{
+                loteService.atualizaLote(loteService.getLoteByProduto(resumo.getProduto()), resumo.getQuantidade());
+            }
+        });
         Compra compra = compraService.criaCompra(resumos, resumos.size(), "04/12/2021", cliente);
 
         compraService.salvarCompra(compra);

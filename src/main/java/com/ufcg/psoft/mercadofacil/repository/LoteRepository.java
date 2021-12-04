@@ -11,4 +11,6 @@ import java.util.Optional;
 
 public interface LoteRepository extends JpaRepository<Lote, Long>{
     List<Lote> findByProduto(Produto produto);
+
+    Lote findLoteByProduto(Produto produto);
 }

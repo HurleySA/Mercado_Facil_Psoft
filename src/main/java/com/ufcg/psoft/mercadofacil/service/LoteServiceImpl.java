@@ -22,6 +22,15 @@ public class LoteServiceImpl implements LoteService {
 	}
 
 	@Override
+	public Lote getLoteByProduto(Produto produto){ return loteRepository.findLoteByProduto(produto);}
+
+	@Override
+	public Lote atualizaLote(Lote lote, int quantidade) {
+		lote.setNumeroDeItens(lote.getNumeroDeItens() - quantidade);
+		return  lote;
+	}
+
+	@Override
 	public AtomicInteger getTotalByProduto(Produto produto) {
 		List<Lote> lotes = getByProduto(produto);
 		AtomicInteger total = new AtomicInteger();
@@ -37,6 +46,9 @@ public class LoteServiceImpl implements LoteService {
 
 	public void salvarLote(Lote lote) {
 		loteRepository.save(lote);		
+	}
+	public void removerLote(Lote lote){
+		loteRepository.delete(lote);
 	}
 
 	public Lote criaLote(int numItens, Produto produto) {

@@ -14,7 +14,13 @@ public interface LoteService {
 	public List<Lote> listarLotes();
 
 	public void salvarLote(Lote lote);
+
+	public void removerLote(Lote lote);
 	
 	public Lote criaLote(int numItens, Produto produto);
+
+	public Lote getLoteByProduto(Produto produto);
+
+	public Lote atualizaLote(Lote lote, int quantidade);
 
 }

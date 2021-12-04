@@ -96,4 +96,12 @@ public class ProdutoApiController {
 
 		return new ResponseEntity<Produto>(HttpStatus.OK);
 	}
+
+	@RequestMapping(value = "/produto/{codigo}", method = RequestMethod.GET)
+	public ResponseEntity<?> removerProduto(@PathVariable("codigo") String codigo){
+		List<Produto> produtos = produtoService.getProdutoByCodigoBarra(codigo);
+
+		return new ResponseEntity<List<Produto>>(produtos,HttpStatus.OK);
+
+	}
 }
