@@ -51,7 +51,6 @@ public class CompraApiController {
         Compra compra = compraService.criaCompra(resumos, resumos.size(), "04/12/2021", cliente);
 
         compraService.salvarCompra(compra);
-
         clienteService.limpaCarrinho(cliente);
         clienteService.salvarClienteCadastrado(cliente);
 

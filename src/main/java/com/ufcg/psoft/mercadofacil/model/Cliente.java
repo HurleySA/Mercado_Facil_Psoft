@@ -45,7 +45,7 @@ public class Cliente {
 		this.idade = idade;
 		this.endereco = endereco;
 		this.carrinho = carrinho;
-		this.compras = compras;
+		this.compras =  new ArrayList<Compra>(compras);
 	}
 
 	public Long getId() {

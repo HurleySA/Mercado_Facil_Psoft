@@ -22,7 +22,7 @@ public class Carrinho {
     }
 
     public Carrinho(List<Resumo> resumosPedidos) {
-        this.resumosPedidos = resumosPedidos;
+        this.resumosPedidos = new ArrayList<>(resumosPedidos);
     }
 
     public Long getId() {

@@ -41,6 +41,9 @@ public class CarrinhoApiController {
     @Autowired
     LoteService loteService;
 
+    @Autowired
+    CarrinhoService carrinhoService;
+
 
     @RequestMapping(value = "/carrinho/{idCliente}", method = RequestMethod.GET)
     public ResponseEntity<?> consultaCarrinho(@PathVariable("idCliente") long idCliente) {
@@ -75,12 +78,18 @@ public class CarrinhoApiController {
         }
         Produto produto = optionalProduto.get();
 
-        Boolean resumoCadastrado = cliente.getCarrinho().getResumosPedidos().contains(resumoService.getResumoByProduto(produto).get());
-        int total = loteService.getTotalByProduto(produto).get();
-
         if(!produto.isDisponivel()){
             return new ResponseEntity<CustomErrorType>(new CustomErrorType("PRODUTO NÃO DISPONÍVEL"), HttpStatus.CONFLICT);
         }
+
+        Optional<Resumo> optionalResumo = resumoService.getResumoByProduto(produto);
+
+        if(!optionalResumo.isPresent()){
+            return new ResponseEntity<CustomErrorType>(new CustomErrorType("NÃO HÁ RESUMO CADASTRADO"), HttpStatus.CONFLICT);
+        }
+        Boolean resumoCadastrado = cliente.getCarrinho().getResumosPedidos().contains(resumoService.getResumoByProduto(produto).get());
+        int total = loteService.getTotalByProduto(produto).get();
+
 
         if(resumoCadastrado){
             return new ResponseEntity<CustomErrorType>(new CustomErrorType("RESUMO JÁ CADASTRADO"), HttpStatus.CONFLICT);
