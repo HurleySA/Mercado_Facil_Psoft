@@ -3,6 +3,7 @@ package com.ufcg.psoft.mercadofacil.controller;
 import com.ufcg.psoft.mercadofacil.model.Cliente;
 import com.ufcg.psoft.mercadofacil.model.Compra;
 import com.ufcg.psoft.mercadofacil.model.Produto;
+import com.ufcg.psoft.mercadofacil.model.Resumo;
 import com.ufcg.psoft.mercadofacil.service.ClienteService;
 import com.ufcg.psoft.mercadofacil.service.CompraService;
 import com.ufcg.psoft.mercadofacil.util.CustomErrorType;
@@ -27,6 +28,19 @@ public class CompraApiController {
     @Autowired
     CompraService compraService;
 
+    @RequestMapping(value="/compra/{idCliente}", method = RequestMethod.POST)
+    public ResponseEntity<?> realizaCompra(@PathVariable("idCliente") long idCliente){
+        Optional<Cliente> cliente = clienteService.getClienteById(idCliente);
+
+        if (!cliente.isPresent()) {
+            return ErroCliente.erroClienteNaoEnconrtrado(idCliente);
+        }
+        List<Resumo> resumos = cliente.get().getCarrinho().getResumosPedidos();
+        Compra compra = new Compra(resumos, resumos.size(), "03/12/2021", cliente.get());
+
+        return new ResponseEntity<Compra>(compra, HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/compras/{idCliente}", method = RequestMethod.GET)
     public ResponseEntity<?> listaCompras(@PathVariable("idCliente") long idCliente){
         Optional<Cliente> cliente = clienteService.getClienteById(idCliente);
@@ -40,8 +54,6 @@ public class CompraApiController {
             return new ResponseEntity<CustomErrorType>(new CustomErrorType("NÃO POSSUI COMPRAS."), HttpStatus.CONFLICT);
 
         }
-
-
         return new ResponseEntity<List<Compra>>(compras, HttpStatus.OK);
 
     }

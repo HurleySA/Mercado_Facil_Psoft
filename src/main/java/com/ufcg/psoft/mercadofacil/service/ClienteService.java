@@ -27,4 +27,5 @@ public interface ClienteService {
 
 	public Cliente removerResumosCliente(Resumo resumo, Cliente cliente);
 
+
 }

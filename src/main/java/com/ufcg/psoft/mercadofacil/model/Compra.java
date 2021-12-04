@@ -16,7 +16,7 @@ public class Compra {
     private Long id;
 
     @ManyToMany
-    private List<Produto> produtos;
+    private List<Resumo> resumos;
 
     private int quantidadeProdutos;
     private String data;
@@ -30,16 +30,16 @@ public class Compra {
     }
 
     public Compra(Cliente cliente) {
-        this.produtos = new ArrayList<>();
-        this.quantidadeProdutos = produtos.size();
+        this.resumos = cliente.getCarrinho().getResumosPedidos();
+        this.quantidadeProdutos = resumos.size();
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         Date date = new Date();
         this.data = formatter.format(date);
         this.cliente = cliente;
     }
 
-    public Compra(List<Produto> produtos, int quantidadeProdutos, String data, Cliente cliente) {
-        this.produtos = produtos;
+    public Compra(List<Resumo> resumos, int quantidadeProdutos, String data, Cliente cliente) {
+        this.resumos = resumos;
         this.quantidadeProdutos = quantidadeProdutos;
         this.data = data;
         this.cliente = cliente;
@@ -51,12 +51,12 @@ public class Compra {
         return id;
     }
 
-    public List<Produto> getProdutos() {
-        return produtos;
+    public List<Resumo> getResumos() {
+        return resumos;
     }
 
-    public void setProdutos(List<Produto> produtos) {
-        this.produtos = produtos;
+    public void setResumos(List<Produto> produtos) {
+        this.resumos = resumos;
     }
 
     public int getQuantidade() {
@@ -83,7 +83,7 @@ public class Compra {
         this.cliente = cliente;
     }
 
-    public void adicionaProduto(Produto produto) { produtos.add(produto);}
+    public void adicionaResumo(Resumo resumo) { resumos.add(resumo);}
 
-    public void removeProduto(Produto produto) { produtos.remove(produto);}
+    public void removeResumo(Resumo resumo) { resumos.remove(resumo);}
 }

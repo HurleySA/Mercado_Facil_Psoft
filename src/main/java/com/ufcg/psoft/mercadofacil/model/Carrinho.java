@@ -14,6 +14,9 @@ public class Carrinho {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Resumo> resumosPedidos;
 
+    @OneToOne
+    private Cliente cliente;
+
     public Carrinho(){
         this.resumosPedidos = new ArrayList<>();
     }

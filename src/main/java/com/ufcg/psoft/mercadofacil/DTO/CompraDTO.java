@@ -3,13 +3,14 @@ package com.ufcg.psoft.mercadofacil.DTO;
 import com.ufcg.psoft.mercadofacil.model.Cliente;
 import com.ufcg.psoft.mercadofacil.model.Compra;
 import com.ufcg.psoft.mercadofacil.model.Produto;
+import com.ufcg.psoft.mercadofacil.model.Resumo;
 
 import java.util.List;
 
 
 public class CompraDTO {
 
-    private List<Produto> produtos;
+    private List<Resumo> resumos;
 
     private int quantidadeProdutos;
 
@@ -17,8 +18,8 @@ public class CompraDTO {
 
     private Cliente cliente;
 
-    public List<Produto> getProdutos() {
-        return produtos;
+    public List<Resumo> getResumos() {
+        return resumos;
     }
 
     public int getQuantidadeProdutos() {

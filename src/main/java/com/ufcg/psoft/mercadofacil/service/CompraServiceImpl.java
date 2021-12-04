@@ -24,7 +24,7 @@ public class CompraServiceImpl implements CompraService{
     public List<Compra> getComprasByCliente(Cliente cliente) {return compraRepository.findByCliente(cliente);}
 
     public Compra criaCompra(CompraDTO compraDTO){
-        Compra compra = new Compra(compraDTO.getProdutos(), compraDTO.getQuantidadeProdutos(), compraDTO.getData(), compraDTO.getCliente() );
+        Compra compra = new Compra(compraDTO.getResumos(), compraDTO.getQuantidadeProdutos(), compraDTO.getData(), compraDTO.getCliente() );
         return compra;
     }
 

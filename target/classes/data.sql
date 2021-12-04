@@ -16,11 +16,7 @@ values(10005,'Creme Dental', '87654325-C', 'Colgate', FALSE, 'HIGIENE', 2.5);
 insert into resumo (ID, PRODUTO_ID, QUANTIDADE)
 values(1, 10005, 5);
 
-insert into carrinho
-values(1);
 
-insert into carrinho_resumos_pedidos
-values(1, 1);
 
 
 insert into lote (ID, PRODUTO_ID, NUMERO_DE_ITENS)
@@ -33,17 +29,13 @@ values(2, 10004, 10);
 
 update produto set IS_DISPONIVEL = TRUE where ID = 10004;
 
-insert into cliente (ID, CPF, NOME, IDADE, ENDERECO, CARRINHO_ID)
-values(1001, 10020030006, 'Fulano', 23, 'Rua tal', 1);
+insert into cliente (ID, CPF, NOME, IDADE, ENDERECO)
+values(1001, 10020030006, 'Fulano', 23, 'Rua tal');
 
-insert into compra (ID, DATA, QUANTIDADE_PRODUTOS, CLIENTE_ID)
-values(25, 03/12/2021, 5, 1001);
+insert into carrinho
+values(1, 1001);
 
-insert into compra (ID, DATA, QUANTIDADE_PRODUTOS, CLIENTE_ID)
-values(28, 03/12/2021, 3, 1001);
+insert into carrinho_resumos_pedidos
+values(1, 1);
 
-insert into compra_produtos(COMPRA_ID, PRODUTOS_ID)
-values(25,10005);
-
-insert into compra_produtos(COMPRA_ID, PRODUTOS_ID)
-values(28,10004);
+update cliente set CARRINHO_ID = 1 where ID = 1001;

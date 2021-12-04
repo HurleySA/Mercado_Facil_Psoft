@@ -53,14 +53,12 @@ public class ClienteServiceImpl implements ClienteService {
 
 	public Cliente atualizaResumosCliente(Resumo resumo, Cliente cliente) {
 		cliente.adicionaResumo(resumo);
-
 		return cliente;
 	}
 
 	@Override
 	public Cliente removerResumosCliente(Resumo resumo, Cliente cliente) {
 		cliente.removeResumo(resumo);
-
 		return cliente;
 	}
 

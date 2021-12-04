@@ -134,9 +134,6 @@ public class CarrinhoApiController {
 
         }
 
-
-
-
         return new ResponseEntity<Cliente>(cliente, HttpStatus.OK);
     }
 
