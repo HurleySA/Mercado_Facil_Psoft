@@ -24,8 +24,6 @@ public class Cliente {
 	@OneToOne(cascade=CascadeType.ALL)
 	private Carrinho carrinho;
 
-
-
 	@OneToMany(mappedBy="cliente")
 	@JsonManagedReference
 	private List<Compra> compras;

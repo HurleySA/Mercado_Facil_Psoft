@@ -75,14 +75,14 @@ public class CarrinhoApiController {
         }
         Produto produto = optionalProduto.get();
 
-        Optional<Resumo> resumoProduto = resumoService.getResumoByProduto(produto);
+        Boolean resumoCadastrado = cliente.getCarrinho().getResumosPedidos().contains(resumoService.getResumoByProduto(produto).get());
         int total = loteService.getTotalByProduto(produto).get();
 
         if(!produto.isDisponivel()){
             return new ResponseEntity<CustomErrorType>(new CustomErrorType("PRODUTO NÃO DISPONÍVEL"), HttpStatus.CONFLICT);
         }
 
-        if(resumoProduto.isPresent()){
+        if(resumoCadastrado){
             return new ResponseEntity<CustomErrorType>(new CustomErrorType("RESUMO JÁ CADASTRADO"), HttpStatus.CONFLICT);
         }
         if(numItens > total){

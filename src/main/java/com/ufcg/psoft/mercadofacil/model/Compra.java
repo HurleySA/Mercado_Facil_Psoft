@@ -37,7 +37,7 @@ public class Compra {
     }
 
     public Compra(List<Resumo> resumos, int quantidadeProdutos, String data, Cliente cliente) {
-        this.resumos = resumos;
+        this.resumos = new ArrayList<>(resumos);
         this.quantidadeProdutos = quantidadeProdutos;
         this.data = data;
         this.cliente = cliente;

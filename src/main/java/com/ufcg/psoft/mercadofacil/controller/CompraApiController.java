@@ -7,6 +7,7 @@ import com.ufcg.psoft.mercadofacil.model.Resumo;
 import com.ufcg.psoft.mercadofacil.service.CarrinhoService;
 import com.ufcg.psoft.mercadofacil.service.ClienteService;
 import com.ufcg.psoft.mercadofacil.service.CompraService;
+import com.ufcg.psoft.mercadofacil.service.ResumoService;
 import com.ufcg.psoft.mercadofacil.util.CustomErrorType;
 import com.ufcg.psoft.mercadofacil.util.ErroCliente;
 import com.ufcg.psoft.mercadofacil.util.ErroProduto;
@@ -32,6 +33,9 @@ public class CompraApiController {
     @Autowired
     CarrinhoService carrinhoService;
 
+    @Autowired
+    ResumoService resumoService;
+
     @RequestMapping(value="/compra/{idCliente}", method = RequestMethod.POST)
     public ResponseEntity<?> realizaCompra(@PathVariable("idCliente") long idCliente){
         Optional<Cliente> optionalCliente = clienteService.getClienteById(idCliente);
@@ -40,12 +44,17 @@ public class CompraApiController {
             return ErroCliente.erroClienteNaoEnconrtrado(idCliente);
         }
         Cliente cliente = optionalCliente.get();
-        Compra compra = compraService.criaCompra(cliente.getCarrinho().getResumosPedidos(), cliente.getCarrinho().getResumosPedidos().size(), "04/12/2021", cliente);
+        List<Resumo> resumos = cliente.getCarrinho().getResumosPedidos();
+        if(resumos.isEmpty()){
+            return new ResponseEntity<CustomErrorType>(new CustomErrorType("NÃO POSSUI PRODUTOS NO CARRINHO."), HttpStatus.CONFLICT);
+        }
+        Compra compra = compraService.criaCompra(resumos, resumos.size(), "04/12/2021", cliente);
 
         compraService.salvarCompra(compra);
 
         clienteService.limpaCarrinho(cliente);
         clienteService.salvarClienteCadastrado(cliente);
+
 
         return new ResponseEntity<Compra>(compra, HttpStatus.CREATED);
     }
