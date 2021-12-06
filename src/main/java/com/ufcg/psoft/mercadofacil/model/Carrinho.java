@@ -14,7 +14,7 @@ public class Carrinho {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Resumo> resumosPedidos;
 
-    @OneToOne
+    @OneToOne(mappedBy = "carrinho")
     private Cliente cliente;
 
     public Carrinho(){

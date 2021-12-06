@@ -33,7 +33,7 @@ insert into cliente (ID, CPF, NOME, IDADE, ENDERECO)
 values(1001, 10020030006, 'Fulano', 23, 'Rua tal');
 
 insert into carrinho
-values(1, 1001);
+values(1);
 
 insert into carrinho_resumos_pedidos
 values(1, 1);

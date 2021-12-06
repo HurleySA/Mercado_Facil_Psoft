@@ -1,28 +1,29 @@
 package com.ufcg.psoft.mercadofacil.service;
 
-import java.util.List;
 import java.util.Optional;
 
-import ch.qos.logback.core.net.server.Client;
 import com.ufcg.psoft.mercadofacil.DTO.ClienteDTO;
 import com.ufcg.psoft.mercadofacil.model.Cliente;
 import com.ufcg.psoft.mercadofacil.model.Resumo;
+import com.ufcg.psoft.mercadofacil.util.CustomErrorType;
+import org.springframework.http.ResponseEntity;
 
 public interface ClienteService {
 
 	public Optional<Cliente> getClienteById(Long id);
 	
 	public Optional<Cliente> getClienteByCPF(Long cpf);
-	
-	public void removerClienteCadastrado(Cliente cliente);
+
+	public ResponseEntity<?> removerClienteCadastradoById(Long id);
+
 
 	public void salvarClienteCadastrado(Cliente cliente);
 
-	public List<Cliente> listarClientes();
+	public ResponseEntity<?> listarClientes();
 	
-	public Cliente criaCliente(ClienteDTO clienteDTO);
-	
-	public Cliente atualizaCliente(ClienteDTO clienteDTO, Cliente cliente);
+	public ResponseEntity<?> criaCliente(ClienteDTO clienteDTO);
+
+	public  ResponseEntity<?> atualizaClienteById(Long id,ClienteDTO clienteDTO);
 
 	public Cliente atualizaResumosCliente(Resumo resumo, Cliente cliente);
 
@@ -31,4 +32,5 @@ public interface ClienteService {
 	public Cliente limpaCarrinho(Cliente cliente);
 
 
+	ResponseEntity<?> pegaClientePeloId(long id);
 }

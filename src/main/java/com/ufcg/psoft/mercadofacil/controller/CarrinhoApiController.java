@@ -94,6 +94,10 @@ public class CarrinhoApiController {
             if(numItens > total){
                 return new ResponseEntity<CustomErrorType>(new CustomErrorType("NÃO HÁ TANTAS UNIDADES DISPONÍVEL"), HttpStatus.CONFLICT);
             }
+            resumo = resumoService.criaResumo(numItens, produto);
+            resumoService.salvarResumo(resumo);
+            clienteService.atualizaResumosCliente(resumo, cliente);
+            clienteService.salvarClienteCadastrado(cliente);
         }else{
             resumo = resumoService.criaResumo(numItens, produto);
             resumoService.salvarResumo(resumo);
