@@ -11,7 +11,7 @@ public class Carrinho {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<Resumo> resumosPedidos;
 
     @OneToOne(mappedBy = "carrinho")
