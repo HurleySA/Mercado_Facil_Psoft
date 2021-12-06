@@ -33,13 +33,13 @@ public class LoteApiController {
 	ProdutoService produtoService;
 	
 	@RequestMapping(value = "/lotes", method = RequestMethod.GET)
-	public ResponseEntity<?> listarLotes() {
-		return loteService.listarLotes();
+	public ResponseEntity<?> listarLotesResponse() {
+		return loteService.listarLotesResponse();
 
 	}
 	@RequestMapping(value = "/lotes/{idProduto}", method = RequestMethod.GET)
 	public ResponseEntity<?> listarLotesDeProduto(@PathVariable("idProduto") long idProduto) {
-		return loteService.getLoteByProdutoId(idProduto);
+		return loteService.getLoteByProdutoIdResponse(idProduto);
 	}
 	
 	@RequestMapping(value = "/produto/{idProduto}/lote/", method = RequestMethod.POST)

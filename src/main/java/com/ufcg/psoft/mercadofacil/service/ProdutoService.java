@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.ufcg.psoft.mercadofacil.DTO.ProdutoDTO;
 import com.ufcg.psoft.mercadofacil.model.Produto;
+import org.springframework.http.ResponseEntity;
 
 public interface ProdutoService {
 
@@ -17,8 +18,17 @@ public interface ProdutoService {
 	public void salvarProdutoCadastrado(Produto produto);
 
 	public List<Produto> listarProdutos();
+
+	public ResponseEntity<?>  listaProdutosResponse();
 	
-	public Produto criaProduto(ProdutoDTO produto);
+	public ResponseEntity<?> criaProduto(ProdutoDTO produto);
 	
 	public Produto atualizaProduto(ProdutoDTO produtoDTO, Produto produto);
+	public ResponseEntity<?> atualizaProdutoById(Long id, ProdutoDTO produtoDTO);
+
+	ResponseEntity<?> getProduto(long id);
+
+	ResponseEntity<?> removerProdutoCadastradoById(long id);
+
+	ResponseEntity<?> listaProdutosByCodigoBarra(String codigo);
 }

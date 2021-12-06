@@ -1,5 +1,6 @@
 package com.ufcg.psoft.mercadofacil.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.ufcg.psoft.mercadofacil.DTO.ClienteDTO;
@@ -19,7 +20,9 @@ public interface ClienteService {
 
 	public void salvarClienteCadastrado(Cliente cliente);
 
-	public ResponseEntity<?> listarClientes();
+	public List<Cliente> listarClientes();
+
+	public ResponseEntity<?> listarClientesResponse();
 	
 	public ResponseEntity<?> criaCliente(ClienteDTO clienteDTO);
 

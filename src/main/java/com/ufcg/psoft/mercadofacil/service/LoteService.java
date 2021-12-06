@@ -12,7 +12,9 @@ public interface LoteService {
 
 	public AtomicInteger getTotalByProduto(Produto produto);
 
-	public ResponseEntity<?> listarLotes();
+	public ResponseEntity<?> listarLotesResponse();
+
+	public List<Lote> listarLotes();
 
 	public void salvarLote(Lote lote);
 
@@ -24,7 +26,9 @@ public interface LoteService {
 
 	public Lote atualizaLote(Lote lote, int quantidade);
 
-	ResponseEntity<?> getLoteByProdutoId(long idProduto);
+	ResponseEntity<?> getLoteByProdutoIdResponse(long idProduto);
+
+	List<Lote>  getLoteByProdutoId(long idProduto);
 
 	ResponseEntity<?> criaLoteById(long idProduto, int numItens);
 }

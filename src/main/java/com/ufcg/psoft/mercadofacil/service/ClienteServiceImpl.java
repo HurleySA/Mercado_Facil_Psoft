@@ -55,7 +55,12 @@ public class ClienteServiceImpl implements ClienteService {
 		clienteRepository.save(cliente);
 	}
 
-	public ResponseEntity<?> listarClientes() {
+	@Override
+	public List<Cliente> listarClientes() {
+		return clienteRepository.findAll();
+	}
+
+	public ResponseEntity<?> listarClientesResponse() {
 		List<Cliente> clientes = clienteRepository.findAll();
 
 		if (clientes.isEmpty()) {

@@ -28,8 +28,8 @@ public class ClienteApiController {
 	ClienteService clienteService;
 
 	@RequestMapping(value = "/clientes", method = RequestMethod.GET)
-	public ResponseEntity<?> listarClientes() {
-		return clienteService.listarClientes();
+	public ResponseEntity<?> listarClientesResponse() {
+		return clienteService.listarClientesResponse();
 	}
 
 	@RequestMapping(value = "/cliente/", method = RequestMethod.POST)

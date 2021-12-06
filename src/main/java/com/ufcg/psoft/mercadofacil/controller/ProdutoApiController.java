@@ -29,79 +29,33 @@ public class ProdutoApiController {
 	
 	@RequestMapping(value = "/produtos", method = RequestMethod.GET)
 	public ResponseEntity<?> listarProdutos() {
-		
-		List<Produto> produtos = produtoService.listarProdutos();
-		
-		if (produtos.isEmpty()) {
-			return ErroProduto.erroSemProdutosCadastrados();
-		}
-		
-		return new ResponseEntity<List<Produto>>(produtos, HttpStatus.OK);
+		return produtoService.listaProdutosResponse();
+
 	}
 	
 	@RequestMapping(value = "/produto/", method = RequestMethod.POST)
 	public ResponseEntity<?> criarProduto(@RequestBody ProdutoDTO produtoDTO, UriComponentsBuilder ucBuilder) {
-
-		List<Produto> produtos = produtoService.getProdutoByCodigoBarra(produtoDTO.getCodigoBarra());
-		
-		if (!produtos.isEmpty()) {
-			return ErroProduto.erroProdutoJaCadastrado(produtoDTO);
-		}
-
-		Produto produto = produtoService.criaProduto(produtoDTO);
-		produtoService.salvarProdutoCadastrado(produto);
-
-		return new ResponseEntity<Produto>(produto, HttpStatus.CREATED);
+		return produtoService.criaProduto(produtoDTO);
 	}
 
 	@RequestMapping(value = "/produto/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> consultarProduto(@PathVariable("id") long id) {
-
-		Optional<Produto> optionalProduto = produtoService.getProdutoById(id);
-	
-		if (!optionalProduto.isPresent()) {
-			return ErroProduto.erroProdutoNaoEnconrtrado(id);
-		}
-		
-		return new ResponseEntity<Produto>(optionalProduto.get(), HttpStatus.OK);
+		return produtoService.getProduto(id);
 	}
 	
 	@RequestMapping(value = "/produto/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<?> atualizarProduto(@PathVariable("id") long id, @RequestBody ProdutoDTO produtoDTO) {
+		return produtoService.atualizaProdutoById(id, produtoDTO);
 
-		Optional<Produto> optionalProduto = produtoService.getProdutoById(id);
-		
-		if (!optionalProduto.isPresent()) {
-			return ErroProduto.erroProdutoNaoEnconrtrado(id);
-		}
-		
-		Produto produto = optionalProduto.get();
-		
-		produtoService.atualizaProduto(produtoDTO, produto);
-		produtoService.salvarProdutoCadastrado(produto);
-		
-		return new ResponseEntity<Produto>(produto, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/produto/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<?> removerProduto(@PathVariable("id") long id) {
-
-		Optional<Produto> optionalProduto = produtoService.getProdutoById(id);
-		
-		if (!optionalProduto.isPresent()) {
-			return ErroProduto.erroProdutoNaoEnconrtrado(id);
-		}
-				
-		produtoService.removerProdutoCadastrado(optionalProduto.get());
-
-		return new ResponseEntity<Produto>(HttpStatus.OK);
+		return produtoService.removerProdutoCadastradoById(id);
 	}
 
-	@RequestMapping(value = "/produto/{codigo}", method = RequestMethod.GET)
-	public ResponseEntity<?> removerProduto(@PathVariable("codigo") String codigo){
-		List<Produto> produtos = produtoService.getProdutoByCodigoBarra(codigo);
-
-		return new ResponseEntity<List<Produto>>(produtos,HttpStatus.OK);
-
+	@RequestMapping(value = "/produtos/{codigo}", method = RequestMethod.GET)
+	public ResponseEntity<?> listaProdutoByCodigo(@PathVariable("codigo") String codigo){
+		return produtoService.listaProdutosByCodigoBarra(codigo);
 	}
 }
