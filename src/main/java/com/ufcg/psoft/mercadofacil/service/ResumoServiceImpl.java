@@ -3,6 +3,7 @@ package com.ufcg.psoft.mercadofacil.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.ufcg.psoft.mercadofacil.model.Cliente;
 import com.ufcg.psoft.mercadofacil.util.ErroLote;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ public class ResumoServiceImpl implements ResumoService {
     public Optional<Resumo> getResumoById(long id) { return resumoRepository.findById(id);
     }
 
-    public  Optional<Resumo>  getResumoByProduto(Produto produto) { return resumoRepository.findByProduto(produto);
+    public  List<Resumo>  getResumoByProduto(Produto produto) { return resumoRepository.findByProduto(produto);
     }
 
     public List<Resumo> listarResumos() {
@@ -49,8 +50,13 @@ public class ResumoServiceImpl implements ResumoService {
     public void removerResumo(Resumo resumo) { resumoRepository.delete(resumo);
     }
 
-    public Resumo criaResumo(int numItens, Produto produto) {
-        Resumo resumo = new Resumo(produto, numItens);
+    public Resumo criaResumo(int numItens, Produto produto, Cliente cliente) {
+        Resumo resumo = new Resumo(produto, numItens, cliente);
         return resumo;
+    }
+
+    @Override
+    public Optional<Resumo> getResumoByProdutoAndCliente(Produto produto, Cliente cliente) {
+        return resumoRepository.findByProdutoAndCliente(produto, cliente);
     }
 }

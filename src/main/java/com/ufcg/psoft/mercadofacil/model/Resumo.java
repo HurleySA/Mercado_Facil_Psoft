@@ -13,12 +13,16 @@ public class Resumo {
     private Produto produto;
     private int quantidade;
 
+    @ManyToOne
+    private Cliente cliente;
+
     public Resumo() {
     }
 
-    public Resumo(Produto produto, int quantidade) {
+    public Resumo(Produto produto, int quantidade, Cliente cliente) {
         this.produto = produto;
         this.quantidade = quantidade;
+        this.cliente = cliente;
     }
 
     public Long getId() {

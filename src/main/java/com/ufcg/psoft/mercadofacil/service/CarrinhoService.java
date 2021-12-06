@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import com.ufcg.psoft.mercadofacil.model.Cliente;
 import com.ufcg.psoft.mercadofacil.model.Produto;
 import com.ufcg.psoft.mercadofacil.model.Resumo;
+import org.springframework.http.ResponseEntity;
 
 
 public interface CarrinhoService {
@@ -21,4 +22,9 @@ public interface CarrinhoService {
     public int getTotalProduto(Cliente cliente, Produto produto);
 
 
+    ResponseEntity<?> listaCarrinhoByClienteId(long idCliente);
+
+    ResponseEntity<?> adicionarResumoByIds(long idCliente, long idProduto, int numItens);
+
+    ResponseEntity<?> removerResumoCadastradoByIds(long idCliente, long idProduto);
 }
