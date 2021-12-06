@@ -1,9 +1,14 @@
 package com.ufcg.psoft.mercadofacil.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.ufcg.psoft.mercadofacil.util.ErroLote;
+import com.ufcg.psoft.mercadofacil.util.ErroProduto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.ufcg.psoft.mercadofacil.model.Lote;
@@ -15,6 +20,9 @@ public class LoteServiceImpl implements LoteService {
 	
 	@Autowired
 	private LoteRepository loteRepository;
+
+	@Autowired
+	ProdutoService produtoService;
 
 	@Override
 	public List<Lote> getByProduto(Produto produto) {
@@ -31,6 +39,47 @@ public class LoteServiceImpl implements LoteService {
 	}
 
 	@Override
+	public ResponseEntity<?> getLoteByProdutoId(long idProduto) {
+
+		Optional<Produto> optionalProduto = produtoService.getProdutoById(idProduto);
+
+		if (!optionalProduto.isPresent()) {
+			return ErroProduto.erroProdutoNaoEnconrtrado(idProduto);
+		}
+		Produto produto = optionalProduto.get();
+
+		List<Lote> lotes = this.getByProduto(produto);
+
+		if (lotes.isEmpty()) {
+			return ErroLote.erroSemLotesCadastrados();
+		}
+
+
+		return new ResponseEntity<List<Lote>>(lotes, HttpStatus.OK);
+	}
+
+	@Override
+	public ResponseEntity<?> criaLoteById(long idProduto, int numItens) {
+		Optional<Produto> optionalProduto = produtoService.getProdutoById(idProduto);
+
+		if (!optionalProduto.isPresent()) {
+			return ErroProduto.erroProdutoNaoEnconrtrado(idProduto);
+		}
+
+		Produto produto = optionalProduto.get();
+		Lote lote = this.criaLote(numItens, produto);
+
+		if (!produto.isDisponivel() & (numItens > 0)) {
+			produto.tornaDisponivel();
+			produtoService.salvarProdutoCadastrado(produto);
+		}
+
+		this.salvarLote(lote);
+
+		return new ResponseEntity<>(lote, HttpStatus.CREATED);
+	}
+
+	@Override
 	public AtomicInteger getTotalByProduto(Produto produto) {
 		List<Lote> lotes = getByProduto(produto);
 		AtomicInteger total = new AtomicInteger();
@@ -40,8 +89,13 @@ public class LoteServiceImpl implements LoteService {
 		return total;
 	}
 
-	public List<Lote> listarLotes() {
-		return loteRepository.findAll();
+	public ResponseEntity<?> listarLotes() {
+		List<Lote> lotes = loteRepository.findAll();
+		if (lotes.isEmpty()) {
+			return ErroLote.erroSemLotesCadastrados();
+		}
+
+		return new ResponseEntity<List<Lote>>(lotes, HttpStatus.OK);
 	}
 
 	public void salvarLote(Lote lote) {

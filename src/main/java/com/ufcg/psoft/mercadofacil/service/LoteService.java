@@ -5,13 +5,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.ufcg.psoft.mercadofacil.model.Lote;
 import com.ufcg.psoft.mercadofacil.model.Produto;
+import org.springframework.http.ResponseEntity;
 
 public interface LoteService {
 	public List<Lote> getByProduto(Produto produto);
 
 	public AtomicInteger getTotalByProduto(Produto produto);
 
-	public List<Lote> listarLotes();
+	public ResponseEntity<?> listarLotes();
 
 	public void salvarLote(Lote lote);
 
@@ -23,4 +24,7 @@ public interface LoteService {
 
 	public Lote atualizaLote(Lote lote, int quantidade);
 
+	ResponseEntity<?> getLoteByProdutoId(long idProduto);
+
+	ResponseEntity<?> criaLoteById(long idProduto, int numItens);
 }
