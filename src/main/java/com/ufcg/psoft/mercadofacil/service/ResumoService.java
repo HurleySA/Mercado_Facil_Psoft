@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.ufcg.psoft.mercadofacil.model.Resumo;
 import com.ufcg.psoft.mercadofacil.model.Produto;
+import org.springframework.http.ResponseEntity;
 
 public interface ResumoService {
 
@@ -13,6 +14,8 @@ public interface ResumoService {
     public Optional<Resumo> getResumoByProduto(Produto produto);
 
     public List<Resumo> listarResumos();
+
+    public ResponseEntity<?> listarResumosResponse();
 
     public void salvarResumo(Resumo resumo);
 
