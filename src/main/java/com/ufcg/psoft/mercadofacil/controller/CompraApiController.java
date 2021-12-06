@@ -38,69 +38,17 @@ public class CompraApiController {
 
     @RequestMapping(value="/compra/{idCliente}", method = RequestMethod.POST)
     public ResponseEntity<?> realizaCompra(@PathVariable("idCliente") long idCliente){
-        Optional<Cliente> optionalCliente = clienteService.getClienteById(idCliente);
-
-        if (!optionalCliente.isPresent()) {
-            return ErroCliente.erroClienteNaoEnconrtrado(idCliente);
-        }
-        Cliente cliente = optionalCliente.get();
-        List<Resumo> resumos = cliente.getCarrinho().getResumosPedidos();
-        if(resumos.isEmpty()){
-            return new ResponseEntity<CustomErrorType>(new CustomErrorType("NÃO POSSUI PRODUTOS NO CARRINHO."), HttpStatus.CONFLICT);
-        }
-
-        resumos.forEach(resumo -> {
-            if(resumo.getQuantidade() == loteService.getTotalByProduto(resumo.getProduto()).get()){
-                loteService.removerLote(loteService.getLoteByProduto(resumo.getProduto()));
-            }else{
-                loteService.atualizaLote(loteService.getLoteByProduto(resumo.getProduto()), resumo.getQuantidade());
-            }
-        });
-        Compra compra = compraService.criaCompra(resumos, resumos.size(), "04/12/2021", cliente);
-
-        compraService.salvarCompra(compra);
-        clienteService.limpaCarrinho(cliente);
-        clienteService.salvarClienteCadastrado(cliente);
-
-
-        return new ResponseEntity<Compra>(compra, HttpStatus.CREATED);
+        return compraService.criaCompraById(idCliente);
     }
 
     @RequestMapping(value = "/compras/{idCliente}", method = RequestMethod.GET)
     public ResponseEntity<?> listaCompras(@PathVariable("idCliente") long idCliente){
-        Optional<Cliente> cliente = clienteService.getClienteById(idCliente);
-
-        if (!cliente.isPresent()) {
-            return ErroCliente.erroClienteNaoEnconrtrado(idCliente);
-        }
-        List<Compra> compras = cliente.get().getCompras();
-
-        if(compras.size() == 0){
-            return new ResponseEntity<CustomErrorType>(new CustomErrorType("NÃO POSSUI COMPRAS."), HttpStatus.CONFLICT);
-
-        }
-        return new ResponseEntity<List<Compra>>(compras, HttpStatus.OK);
-
+        return compraService.listarComprasResponse(idCliente);
     }
 
     @RequestMapping(value = "/compras/{idCliente}/{idCompra}", method = RequestMethod.GET)
     public ResponseEntity<?> listaCompras(@PathVariable("idCliente") long idCliente, @PathVariable("idCompra") long idCompra){
-        Optional<Cliente> cliente = clienteService.getClienteById(idCliente);
-
-        if (!cliente.isPresent()) {
-            return ErroCliente.erroClienteNaoEnconrtrado(idCliente);
-        }
-
-        Optional<Compra> compra = compraService.getCompraById(idCompra);
-
-        if (!compra.isPresent()) {
-            return new ResponseEntity<CustomErrorType>(new CustomErrorType("COMPRA NÃO EXISTENTE."), HttpStatus.CONFLICT);
-        }
-
-        if(!cliente.get().getCompras().contains(compra.get())){
-            return new ResponseEntity<CustomErrorType>(new CustomErrorType("COMPRA NÃO PERTENTE AO CLIENTE;"), HttpStatus.CONFLICT);
-        }
-        return new ResponseEntity<Compra>(compra.get(), HttpStatus.OK);
+        return compraService.listarComprasByIds(idCliente, idCompra);
     }
 
 }

@@ -15,7 +15,7 @@ public class Compra {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToMany
+    @ManyToMany(cascade=CascadeType.ALL)
     private List<Resumo> resumos;
 
     private int quantidadeProdutos;
@@ -27,10 +27,11 @@ public class Compra {
     private Cliente cliente;
 
     public Compra() {
+        this.resumos = new ArrayList<>();
     }
 
     public Compra(Cliente cliente, String data) {
-        this.resumos = cliente.getCarrinho().getResumosPedidos();
+        this.resumos = new ArrayList<>(cliente.getCarrinho().getResumosPedidos());
         this.quantidadeProdutos = resumos.size();
         this.data = data;
         this.cliente = cliente;
@@ -54,8 +55,8 @@ public class Compra {
         return resumos;
     }
 
-    public void setResumos(List<Produto> produtos) {
-        this.resumos = resumos;
+    public void setResumos(List<Resumo> resumos) {
+        this.resumos = new ArrayList<>(resumos);
     }
 
     public int getQuantidade() {
@@ -85,4 +86,6 @@ public class Compra {
     public void adicionaResumo(Resumo resumo) { resumos.add(resumo);}
 
     public void removeResumo(Resumo resumo) { resumos.remove(resumo);}
+
+    public void limpaCarrinho() {resumos = new ArrayList<>();}
 }

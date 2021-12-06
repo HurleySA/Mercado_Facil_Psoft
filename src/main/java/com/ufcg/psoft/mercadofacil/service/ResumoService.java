@@ -14,6 +14,8 @@ public interface ResumoService {
 
     public List<Resumo> getResumoByProduto(Produto produto);
 
+    public List<Resumo> getResumoByCliente(Cliente cliente);
+
     public List<Resumo> listarResumos();
 
     public ResponseEntity<?> listarResumosResponse();

@@ -4,6 +4,7 @@ import com.ufcg.psoft.mercadofacil.DTO.CompraDTO;
 import com.ufcg.psoft.mercadofacil.model.Cliente;
 import com.ufcg.psoft.mercadofacil.model.Compra;
 import com.ufcg.psoft.mercadofacil.model.Resumo;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,5 +21,11 @@ public interface CompraService {
     public void salvarCompra(Compra compra);
 
     public void removerCompra(Compra compra);
+
+    ResponseEntity<?> criaCompraById(long idCliente);
+
+    ResponseEntity<?> listarComprasResponse(Long idCliente);
+
+    ResponseEntity<?> listarComprasByIds(long idCliente, long idCompra);
 }
 

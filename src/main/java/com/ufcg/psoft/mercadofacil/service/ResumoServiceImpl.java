@@ -27,11 +27,14 @@ public class ResumoServiceImpl implements ResumoService {
     public  List<Resumo>  getResumoByProduto(Produto produto) { return resumoRepository.findByProduto(produto);
     }
 
+    public List<Resumo> getResumoByCliente(Cliente cliente) {
+        return resumoRepository.findByCliente(cliente);
+    }
+
     public List<Resumo> listarResumos() {
         return resumoRepository.findAll();
     }
 
-    @Override
     public ResponseEntity<?> listarResumosResponse() {
         List<Resumo> resumos = this.listarResumos();
 
@@ -46,7 +49,6 @@ public class ResumoServiceImpl implements ResumoService {
         resumoRepository.save(resumo);
     }
 
-    @Override
     public void removerResumo(Resumo resumo) { resumoRepository.delete(resumo);
     }
 
