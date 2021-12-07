@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 
 public interface ClienteService {
 
-	public Optional<Cliente> getClienteById(Long id);
+	public Cliente getClienteById(Long id);
 	
 	public Optional<Cliente> getClienteByCPF(Long cpf);
 

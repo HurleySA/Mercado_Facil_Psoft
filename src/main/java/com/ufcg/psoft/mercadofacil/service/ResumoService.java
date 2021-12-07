@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 
 public interface ResumoService {
 
-    public Optional<Resumo> getResumoById(long id);
+    public Resumo getResumoById(long id);
 
     public List<Resumo> getResumoByProduto(Produto produto);
 

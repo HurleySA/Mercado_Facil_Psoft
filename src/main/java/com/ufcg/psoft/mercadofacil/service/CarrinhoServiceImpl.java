@@ -66,12 +66,8 @@ public class CarrinhoServiceImpl implements CarrinhoService {
 
     @Override
     public ResponseEntity<?> listaCarrinhoByClienteId(long idCliente) {
-        Optional<Cliente> cliente = clienteService.getClienteById(idCliente);
-
-        if (!cliente.isPresent()) {
-            return ErroCliente.erroClienteNaoEnconrtrado(idCliente);
-        }
-        Carrinho carrinho = cliente.get().getCarrinho();
+        Cliente cliente = clienteService.getClienteById(idCliente);
+        Carrinho carrinho = cliente.getCarrinho();
         List<Resumo> resumos = carrinho.getResumosPedidos();
 
 
@@ -80,19 +76,8 @@ public class CarrinhoServiceImpl implements CarrinhoService {
 
     @Override
     public ResponseEntity<?> adicionarResumoByIds(long idCliente, long idProduto, int numItens) {
-        Optional<Cliente> optionalCliente = clienteService.getClienteById(idCliente);
-
-        if (!optionalCliente.isPresent()) {
-            return ErroCliente.erroClienteNaoEnconrtrado(idCliente);
-        }
-        Cliente cliente = optionalCliente.get();
-
-        Optional<Produto> optionalProduto = produtoService.getProdutoById(idProduto);
-
-        if (!optionalProduto.isPresent()) {
-            return ErroProduto.erroProdutoNaoEnconrtrado(idProduto);
-        }
-        Produto produto = optionalProduto.get();
+        Cliente cliente = clienteService.getClienteById(idCliente);
+        Produto produto = produtoService.getProdutoById(idProduto);
 
         if(!produto.isDisponivel()){
             return new ResponseEntity<CustomErrorType>(new CustomErrorType("PRODUTO NÃO DISPONÍVEL"), HttpStatus.CONFLICT);
@@ -126,20 +111,8 @@ public class CarrinhoServiceImpl implements CarrinhoService {
 
     @Override
     public ResponseEntity<?> removerResumoCadastradoByIds(long idCliente, long idProduto) {
-        Optional<Cliente> optionalCliente = clienteService.getClienteById(idCliente);
-
-        if (!optionalCliente.isPresent()) {
-            return ErroCliente.erroClienteNaoEnconrtrado(idCliente);
-        }
-        Cliente cliente = optionalCliente.get();
-
-        Optional<Produto> optionalProduto = produtoService.getProdutoById(idProduto);
-
-        if (!optionalProduto.isPresent()) {
-            return ErroProduto.erroProdutoNaoEnconrtrado(idProduto);
-        }
-
-        Produto produto = optionalProduto.get();
+        Cliente cliente = clienteService.getClienteById(idCliente);
+        Produto produto = produtoService.getProdutoById(idProduto);
 
         List<Resumo> optionalResumo = resumoService.getResumoByProduto(produto);
 

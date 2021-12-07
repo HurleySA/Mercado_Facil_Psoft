@@ -14,6 +14,8 @@ import com.ufcg.psoft.mercadofacil.model.Resumo;
 import com.ufcg.psoft.mercadofacil.model.Produto;
 import com.ufcg.psoft.mercadofacil.repository.ResumoRepository;
 
+import javax.persistence.EntityExistsException;
+
 @Service
 public class ResumoServiceImpl implements ResumoService {
 
@@ -21,7 +23,8 @@ public class ResumoServiceImpl implements ResumoService {
     private ResumoRepository resumoRepository;
 
     @Override
-    public Optional<Resumo> getResumoById(long id) { return resumoRepository.findById(id);
+    public Resumo getResumoById(long id) {
+        return resumoRepository.findById(id).orElseThrow(() -> new EntityExistsException("Resumo não encontrado."));
     }
 
     public  List<Resumo>  getResumoByProduto(Produto produto) { return resumoRepository.findByProduto(produto);

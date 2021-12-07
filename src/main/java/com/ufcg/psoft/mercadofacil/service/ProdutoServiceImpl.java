@@ -13,18 +13,25 @@ import com.ufcg.psoft.mercadofacil.DTO.ProdutoDTO;
 import com.ufcg.psoft.mercadofacil.model.Produto;
 import com.ufcg.psoft.mercadofacil.repository.ProdutoRepository;
 
+import javax.persistence.EntityExistsException;
+
 @Service
 public class ProdutoServiceImpl implements ProdutoService {
 
 	@Autowired
 	private ProdutoRepository produtoRepository;
 	
-	public Optional<Produto> getProdutoById(long id) {
-		return produtoRepository.findById(id);
+	public Produto getProdutoById(long id) {
+		return (produtoRepository.findById(id).orElseThrow(() -> new EntityExistsException("Produto não encontrado.")));
 	}
 	
 	public List<Produto> getProdutoByCodigoBarra(String codigo) {
-		return produtoRepository.findByCodigoBarra(codigo);
+		List<Produto> produtos = produtoRepository.findByCodigoBarra(codigo);
+
+		if(produtos.isEmpty()){
+			throw new RuntimeException("Não há produtos cadastrados.");
+		}
+		return produtos;
 	}
 
 	public ResponseEntity<?>  listaProdutosResponse(){
@@ -76,13 +83,7 @@ public class ProdutoServiceImpl implements ProdutoService {
 	}
 
 	public ResponseEntity<?> atualizaProdutoById(Long id, ProdutoDTO produtoDTO) {
-		Optional<Produto> optionalProduto = this.getProdutoById(id);
-
-		if (!optionalProduto.isPresent()) {
-			return ErroProduto.erroProdutoNaoEnconrtrado(id);
-		}
-
-		Produto produto = optionalProduto.get();
+		Produto produto = this.getProdutoById(id);
 
 		this.atualizaProduto(produtoDTO, produto);
 		this.salvarProdutoCadastrado(produto);
@@ -93,26 +94,19 @@ public class ProdutoServiceImpl implements ProdutoService {
 
 	@Override
 	public ResponseEntity<?> getProduto(long id) {
-		Optional<Produto> optionalProduto = this.getProdutoById(id);
+		Produto produto = this.getProdutoById(id);
 
-		if (!optionalProduto.isPresent()) {
-			return ErroProduto.erroProdutoNaoEnconrtrado(id);
-		}
 
-		return new ResponseEntity<Produto>(optionalProduto.get(), HttpStatus.OK);
+		return new ResponseEntity<Produto>(produto, HttpStatus.OK);
 	}
 
 	@Override
 	public ResponseEntity<?> removerProdutoCadastradoById(long id) {
-		Optional<Produto> optionalProduto = this.getProdutoById(id);
+		Produto produto = this.getProdutoById(id);
 
-		if (!optionalProduto.isPresent()) {
-			return ErroProduto.erroProdutoNaoEnconrtrado(id);
-		}
+		this.removerProdutoCadastrado(produto);
 
-		this.removerProdutoCadastrado(optionalProduto.get());
-
-		return new ResponseEntity<Produto>(HttpStatus.OK);
+		return new ResponseEntity<Produto>(produto,HttpStatus.OK);
 	}
 
 	@Override

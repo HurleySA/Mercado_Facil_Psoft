@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 
 public interface ProdutoService {
 
-	public Optional<Produto> getProdutoById(long id);
+	public Produto getProdutoById(long id);
 	
 	public List<Produto> getProdutoByCodigoBarra(String codigo);
 	

@@ -15,24 +15,22 @@ import com.ufcg.psoft.mercadofacil.DTO.ClienteDTO;
 import com.ufcg.psoft.mercadofacil.model.Cliente;
 import com.ufcg.psoft.mercadofacil.repository.ClienteRepository;
 
+import javax.persistence.EntityExistsException;
+
+
 @Service
 public class ClienteServiceImpl implements ClienteService {
 
 	@Autowired
 	private ClienteRepository clienteRepository;
 	
-	public Optional<Cliente> getClienteById(Long id) {
-		return clienteRepository.findById(id);
+	public Cliente getClienteById(Long id) {
+		return (clienteRepository.findById(id).orElseThrow(() -> new EntityExistsException("Cliente não encontrado.")));
 	}
 	@Override
 	public ResponseEntity<?> pegaClientePeloId(long id) {
-		Optional<Cliente> clienteOp = this.getClienteById(id);
-
-		if (!clienteOp.isPresent()) {
-			return ErroCliente.erroClienteNaoEnconrtrado(id);
-		}
-
-		return new ResponseEntity<Cliente>(clienteOp.get(), HttpStatus.OK);
+		Cliente cliente = this.getClienteById(id);
+		return new ResponseEntity<Cliente>(cliente, HttpStatus.OK);
 	}
 	
 	public Optional<Cliente> getClienteByCPF(Long cpf) {
@@ -40,14 +38,10 @@ public class ClienteServiceImpl implements ClienteService {
 	}
 
 	public ResponseEntity<?> removerClienteCadastradoById(Long id){
-		Optional<Cliente> clienteOp = this.getClienteById(id);
+		Cliente cliente = this.getClienteById(id);
+		this.clienteRepository.delete(cliente);
 
-		if (!clienteOp.isPresent()) {
-			return ErroCliente.erroClienteNaoEnconrtrado(id);
-		}
-		this.clienteRepository.delete(clienteOp.get());
-
-		return new ResponseEntity<Cliente>(HttpStatus.OK);
+		return new ResponseEntity<Cliente>(cliente, HttpStatus.OK);
 	}
 
 
@@ -84,17 +78,13 @@ public class ClienteServiceImpl implements ClienteService {
 	}
 
 	public  ResponseEntity<?> atualizaClienteById(Long id,ClienteDTO clienteDTO){
-		Optional<Cliente> clienteOp = this.getClienteById(id);
-
-		if (!clienteOp.isPresent()) {
-			return ErroCliente.erroClienteNaoEnconrtrado(id);
-		}
-		clienteOp.get().setIdade(clienteDTO.getIdade());
-		clienteOp.get().setEndereco(clienteDTO.getEndereco());
-		this.salvarClienteCadastrado(clienteOp.get());
+		Cliente cliente = this.getClienteById(id);
+		cliente.setIdade(clienteDTO.getIdade());
+		cliente.setEndereco(clienteDTO.getEndereco());
+		this.salvarClienteCadastrado(cliente);
 
 
-		return new ResponseEntity<Cliente>(clienteOp.get(), HttpStatus.OK);
+		return new ResponseEntity<Cliente>(cliente, HttpStatus.OK);
 	}
 
 	public Cliente atualizaResumosCliente(Resumo resumo, Cliente cliente) {
