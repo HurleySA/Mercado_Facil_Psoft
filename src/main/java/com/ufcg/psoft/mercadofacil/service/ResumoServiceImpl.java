@@ -1,5 +1,6 @@
 package com.ufcg.psoft.mercadofacil.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,5 +61,17 @@ public class ResumoServiceImpl implements ResumoService {
     @Override
     public Optional<Resumo> getResumoByProdutoAndCliente(Produto produto, Cliente cliente) {
         return resumoRepository.findByProdutoAndCliente(produto, cliente);
+    }
+
+    @Override
+    public List<Resumo> getResumosNaoComprados(List<Resumo> resumos) {
+        List<Resumo> resumosNaoComprados = new ArrayList<>();
+
+        resumos.forEach(resumo -> {
+            if(!resumo.getComprado()){
+                resumosNaoComprados.add(resumo);
+            }
+        });
+        return resumosNaoComprados;
     }
 }

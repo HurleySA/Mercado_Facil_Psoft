@@ -102,9 +102,10 @@ public class CarrinhoServiceImpl implements CarrinhoService {
         Resumo resumo;
         if(!resumos.isEmpty()){
             Boolean resumoCadastrado = resumoService.getResumoByProdutoAndCliente(produto, cliente).isPresent();
+            Boolean resumoComprado = resumoService.getResumoByProdutoAndCliente(produto, cliente).get().getComprado();
             int total = loteService.getTotalByProduto(produto).get();
 
-            if(resumoCadastrado){
+            if(resumoCadastrado && !resumoComprado){
                 return new ResponseEntity<CustomErrorType>(new CustomErrorType("RESUMO JÁ CADASTRADO"), HttpStatus.CONFLICT);
             }
             if(numItens > total){

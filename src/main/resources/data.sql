@@ -26,8 +26,8 @@ update produto set IS_DISPONIVEL = TRUE where ID = 10004;
 insert into cliente (ID, CPF, NOME, IDADE, ENDERECO)
 values(1001, 10020030006, 'Fulano', 23, 'Rua tal');
 
-insert into resumo (ID, PRODUTO_ID, QUANTIDADE, CLIENTE_ID)
-values(1, 10005, 5,1001);
+insert into resumo (ID, PRODUTO_ID, QUANTIDADE, CLIENTE_ID, COMPRADO)
+values(1, 10005, 5,1001, false);
 
 insert into carrinho
 values(1);

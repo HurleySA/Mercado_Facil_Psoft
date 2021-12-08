@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 @Service
@@ -62,29 +61,30 @@ public class CompraServiceImpl implements CompraService{
         Cliente cliente = optionalCliente.get();
 
         List<Resumo> resumos = resumoService.getResumoByCliente(cliente);
-       //List<Resumo> resumos = cliente.getCarrinho().getResumosPedidos();
         if(resumos.isEmpty()){
             return new ResponseEntity<CustomErrorType>(new CustomErrorType("NÃO POSSUI PRODUTOS NO CARRINHO."), HttpStatus.CONFLICT);
         }
-
-        resumos.forEach(resumo -> {
-            if(resumo.getQuantidade() == loteService.getTotalByProduto(resumo.getProduto()).get()){
-                loteService.removerLote(loteService.getLoteByProduto(resumo.getProduto()));
-            }else{
-                loteService.atualizaLote(loteService.getLoteByProduto(resumo.getProduto()), resumo.getQuantidade());
-            }
+        List<Resumo> resumosNaoComprados = resumoService.getResumosNaoComprados(resumos);
+        resumosNaoComprados.forEach(resumo -> {
+                if(resumo.getQuantidade() == loteService.getTotalByProduto(resumo.getProduto()).get()){
+                    loteService.removerLote(loteService.getLoteByProduto(resumo.getProduto()));
+                }else{
+                    loteService.atualizaLote(loteService.getLoteByProduto(resumo.getProduto()), resumo.getQuantidade());
+                }
 
         });
-        Compra compra = compraService.criaCompra(resumos, resumos.size(), "04/12/2021", cliente);
+        Compra compra = compraService.criaCompra(resumosNaoComprados, resumos.size(), "04/12/2021", cliente);
 
+        resumos.forEach(resumo -> {
+            if(!resumo.getComprado()){
+                resumo.setComprado(true);
+            }
+        });
         compraService.salvarCompra(compra);
-        compra.setResumos(new ArrayList<>());
         clienteService.limpaCarrinho(cliente);
         clienteService.salvarClienteCadastrado(cliente);
 
-        resumos.forEach(resumo -> {
-            resumoService.removerResumo(resumo);
-        });
+
 
         return new ResponseEntity<  List<Resumo>>(resumos, HttpStatus.CREATED);
     }

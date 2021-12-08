@@ -28,4 +28,6 @@ public interface ResumoService {
 
 
     Optional<Resumo> getResumoByProdutoAndCliente(Produto produto, Cliente cliente);
+
+    List<Resumo> getResumosNaoComprados(List<Resumo> resumos);
 }
