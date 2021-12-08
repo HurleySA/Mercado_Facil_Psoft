@@ -1,14 +1,21 @@
 package com.ufcg.psoft.mercadofacil.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.ufcg.psoft.mercadofacil.util.ErroLote;
+import com.ufcg.psoft.mercadofacil.util.ErroProduto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.ufcg.psoft.mercadofacil.model.Lote;
 import com.ufcg.psoft.mercadofacil.model.Produto;
 import com.ufcg.psoft.mercadofacil.repository.LoteRepository;
+
+import javax.persistence.EntityExistsException;
 
 @Service
 public class LoteServiceImpl implements LoteService {
@@ -16,9 +23,74 @@ public class LoteServiceImpl implements LoteService {
 	@Autowired
 	private LoteRepository loteRepository;
 
+	@Autowired
+	ProdutoService produtoService;
+
 	@Override
 	public List<Lote> getByProduto(Produto produto) {
 		return loteRepository.findByProduto(produto);
+	}
+
+	@Override
+	public Lote getLoteByProduto(Produto produto){ return loteRepository.findLoteByProduto(produto);}
+
+	@Override
+	public Lote atualizaLote(Lote lote, int quantidade) {
+		lote.setNumeroDeItens(lote.getNumeroDeItens() - quantidade);
+		return  lote;
+	}
+
+	@Override
+	public ResponseEntity<?> getLoteByProdutoIdResponse(long idProduto) {
+
+		Optional<Produto> optionalProduto = produtoService.getProdutoById(idProduto);
+
+		if (!optionalProduto.isPresent()) {
+			return ErroProduto.erroProdutoNaoEnconrtrado(idProduto);
+		}
+		Produto produto = optionalProduto.get();
+
+		List<Lote> lotes = this.getByProduto(produto);
+
+		if (lotes.isEmpty()) {
+			return ErroLote.erroSemLotesCadastrados();
+		}
+
+
+		return new ResponseEntity<List<Lote>>(lotes, HttpStatus.OK);
+	}
+
+	@Override
+	public List<Lote> getLoteByProdutoId(long idProduto) {
+		Optional<Produto> optionalProduto = produtoService.getProdutoById(idProduto);
+
+		if (!optionalProduto.isPresent()) {
+			throw new EntityExistsException();
+		}
+		Produto produto = optionalProduto.get();
+
+		return this.getByProduto(produto);
+	}
+
+	@Override
+	public ResponseEntity<?> criaLoteById(long idProduto, int numItens) {
+		Optional<Produto> optionalProduto = produtoService.getProdutoById(idProduto);
+
+		if (!optionalProduto.isPresent()) {
+			return ErroProduto.erroProdutoNaoEnconrtrado(idProduto);
+		}
+
+		Produto produto = optionalProduto.get();
+		Lote lote = this.criaLote(numItens, produto);
+
+		if (!produto.isDisponivel() & (numItens > 0)) {
+			produto.tornaDisponivel();
+			produtoService.salvarProdutoCadastrado(produto);
+		}
+
+		this.salvarLote(lote);
+
+		return new ResponseEntity<>(lote, HttpStatus.CREATED);
 	}
 
 	@Override
@@ -31,12 +103,25 @@ public class LoteServiceImpl implements LoteService {
 		return total;
 	}
 
+	public ResponseEntity<?> listarLotesResponse() {
+		List<Lote> lotes = loteRepository.findAll();
+		if (lotes.isEmpty()) {
+			return ErroLote.erroSemLotesCadastrados();
+		}
+
+		return new ResponseEntity<List<Lote>>(lotes, HttpStatus.OK);
+	}
+
+	@Override
 	public List<Lote> listarLotes() {
 		return loteRepository.findAll();
 	}
 
 	public void salvarLote(Lote lote) {
 		loteRepository.save(lote);		
+	}
+	public void removerLote(Lote lote){
+		loteRepository.delete(lote);
 	}
 
 	public Lote criaLote(int numItens, Produto produto) {

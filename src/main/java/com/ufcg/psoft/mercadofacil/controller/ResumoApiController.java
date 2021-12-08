@@ -28,19 +28,10 @@ public class ResumoApiController {
     @Autowired
     ResumoService resumoService;
 
-    @Autowired
-    ProdutoService produtoService;
 
     @RequestMapping(value = "/resumos", method = RequestMethod.GET)
-    public ResponseEntity<?> listarLotes() {
-
-        List<Resumo> resumos = resumoService.listarResumos();
-
-        if (resumos.isEmpty()) {
-            return ErroLote.erroSemLotesCadastrados();
-        }
-
-        return new ResponseEntity<List<Resumo>>(resumos, HttpStatus.OK);
+    public ResponseEntity<?> listarResumos() {
+        return resumoService.listarResumosResponse();
     }
 
 }

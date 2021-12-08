@@ -12,13 +12,27 @@ public class Resumo {
     @OneToOne
     private Produto produto;
     private int quantidade;
+    private  Boolean comprado;
+
+    @ManyToOne
+    private Cliente cliente;
 
     public Resumo() {
     }
 
-    public Resumo(Produto produto, int quantidade) {
+    public Resumo(Produto produto, int quantidade, Cliente cliente) {
         this.produto = produto;
         this.quantidade = quantidade;
+        this.cliente = cliente;
+        this.comprado = false;
+    }
+
+    public Boolean getComprado() {
+        return comprado;
+    }
+
+    public void setComprado(Boolean comprado) {
+        this.comprado = comprado;
     }
 
     public Long getId() {

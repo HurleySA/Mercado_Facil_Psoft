@@ -11,10 +11,10 @@ public class Carrinho {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<Resumo> resumosPedidos;
 
-    @OneToOne
+    @OneToOne(mappedBy = "carrinho")
     private Cliente cliente;
 
     public Carrinho(){
@@ -22,7 +22,7 @@ public class Carrinho {
     }
 
     public Carrinho(List<Resumo> resumosPedidos) {
-        this.resumosPedidos = resumosPedidos;
+        this.resumosPedidos = new ArrayList<>(resumosPedidos);
     }
 
     public Long getId() {
@@ -37,7 +37,7 @@ public class Carrinho {
 
     public void removeResumo(Resumo resumo) { resumosPedidos.remove(resumo);}
 
-
+    public void limpaCarrinho() {resumosPedidos = new ArrayList<>();}
     public void setResumosPedidos(List<Resumo> resumosPedidos) {
         this.resumosPedidos = resumosPedidos;
     }

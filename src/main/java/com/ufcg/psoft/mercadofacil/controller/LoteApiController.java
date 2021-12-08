@@ -33,54 +33,17 @@ public class LoteApiController {
 	ProdutoService produtoService;
 	
 	@RequestMapping(value = "/lotes", method = RequestMethod.GET)
-	public ResponseEntity<?> listarLotes() {
-		
-		List<Lote> lotes = loteService.listarLotes();
+	public ResponseEntity<?> listarLotesResponse() {
+		return loteService.listarLotesResponse();
 
-		if (lotes.isEmpty()) {
-			return ErroLote.erroSemLotesCadastrados();
-		}
-		
-		return new ResponseEntity<List<Lote>>(lotes, HttpStatus.OK);
 	}
 	@RequestMapping(value = "/lotes/{idProduto}", method = RequestMethod.GET)
 	public ResponseEntity<?> listarLotesDeProduto(@PathVariable("idProduto") long idProduto) {
-		Optional<Produto> optionalProduto = produtoService.getProdutoById(idProduto);
-
-		if (!optionalProduto.isPresent()) {
-			return ErroProduto.erroProdutoNaoEnconrtrado(idProduto);
-		}
-		Produto produto = optionalProduto.get();
-
-		List<Lote> lotes = loteService.getByProduto(produto);
-
-		if (lotes.isEmpty()) {
-			return ErroLote.erroSemLotesCadastrados();
-		}
-
-
-		return new ResponseEntity<List<Lote>>(lotes, HttpStatus.OK);
+		return loteService.getLoteByProdutoIdResponse(idProduto);
 	}
 	
 	@RequestMapping(value = "/produto/{idProduto}/lote/", method = RequestMethod.POST)
-	public ResponseEntity<?> criarLote(@PathVariable("idProduto") long id, @RequestBody int numItens) {
-		
-		Optional<Produto> optionalProduto = produtoService.getProdutoById(id);
-		
-		if (!optionalProduto.isPresent()) {
-			return ErroProduto.erroProdutoNaoEnconrtrado(id);
-		}
-		
-		Produto produto = optionalProduto.get();
-		Lote lote = loteService.criaLote(numItens, produto);
-		
-		if (!produto.isDisponivel() & (numItens > 0)) {
-			produto.tornaDisponivel();
-			produtoService.salvarProdutoCadastrado(produto);
-		}
-
-		loteService.salvarLote(lote);
-
-		return new ResponseEntity<>(lote, HttpStatus.CREATED);
+	public ResponseEntity<?> criarLote(@PathVariable("idProduto") long idProduto, @RequestBody int numItens) {
+		return loteService.criaLoteById(idProduto, numItens);
 	}
 }

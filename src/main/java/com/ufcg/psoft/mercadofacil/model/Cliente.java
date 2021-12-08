@@ -24,7 +24,6 @@ public class Cliente {
 	@OneToOne(cascade=CascadeType.ALL)
 	private Carrinho carrinho;
 
-
 	@OneToMany(mappedBy="cliente")
 	@JsonManagedReference
 	private List<Compra> compras;
@@ -46,7 +45,7 @@ public class Cliente {
 		this.idade = idade;
 		this.endereco = endereco;
 		this.carrinho = carrinho;
-		this.compras = compras;
+		this.compras =  new ArrayList<Compra>(compras);
 	}
 
 	public Long getId() {
@@ -95,5 +94,9 @@ public class Cliente {
 
 	public void setCompras(List<Compra> compras) {
 		this.compras = compras;
+	}
+
+	public void limpaCarrinho() {
+		this.carrinho.limpaCarrinho();
 	}
 }

@@ -28,72 +28,29 @@ public class ClienteApiController {
 	ClienteService clienteService;
 
 	@RequestMapping(value = "/clientes", method = RequestMethod.GET)
-	public ResponseEntity<?> listarClientes() {
-
-		List<Cliente> clientes = clienteService.listarClientes();
-
-		if (clientes.isEmpty()) {
-			return ErroCliente.erroSemClientesCadastrados();
-		}
-
-		return new ResponseEntity<List<Cliente>>(clientes, HttpStatus.OK);
+	public ResponseEntity<?> listarClientesResponse() {
+		return clienteService.listarClientesResponse();
 	}
 
 	@RequestMapping(value = "/cliente/", method = RequestMethod.POST)
 	public ResponseEntity<?> criarCliente(@RequestBody ClienteDTO clienteDTO, UriComponentsBuilder ucBuilder) {
-
-		Optional<Cliente> clienteOp = clienteService.getClienteByCPF(clienteDTO.getCPF());
-
-		if (clienteOp.isPresent()) {
-			return ErroCliente.erroClienteJaCadastrado(clienteDTO);
-		}
-
-		Cliente cliente = clienteService.criaCliente(clienteDTO);
-		clienteService.salvarClienteCadastrado(cliente);
-
-		return new ResponseEntity<Cliente>(cliente, HttpStatus.CREATED);
+		return clienteService.criaCliente(clienteDTO);
 	}
 
 	@RequestMapping(value = "/cliente/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> consultarCliente(@PathVariable("id") long id) {
-
-		Optional<Cliente> clienteOp = clienteService.getClienteById(id);
-
-		if (!clienteOp.isPresent()) {
-			return ErroCliente.erroClienteNaoEnconrtrado(id);
-		}
-
-		return new ResponseEntity<Cliente>(clienteOp.get(), HttpStatus.OK);
+		return clienteService.pegaClientePeloId(id);
 	}
 
 	@RequestMapping(value = "/cliente/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<?> atualizarCliente(@PathVariable("id") long id, @RequestBody ClienteDTO clienteDTO) {
+		return clienteService.atualizaClienteById(id, clienteDTO);
 
-		Optional<Cliente> clienteOp = clienteService.getClienteById(id);
-		
-		if (!clienteOp.isPresent()) {
-			return ErroCliente.erroClienteNaoEnconrtrado(id);
-		}
-		
-		Cliente cliente = clienteOp.get();
-		
-		clienteService.atualizaCliente(clienteDTO, cliente);
-		clienteService.salvarClienteCadastrado(cliente);
-		
-		return new ResponseEntity<Cliente>(cliente, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/cliente/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<?> removerCliente(@PathVariable("id") long id) {
+		return clienteService.removerClienteCadastradoById(id);
 
-		Optional<Cliente> clienteOp = clienteService.getClienteById(id);
-		
-		if (!clienteOp.isPresent()) {
-			return ErroCliente.erroClienteNaoEnconrtrado(id);
-		}
-				
-		clienteService.removerClienteCadastrado(clienteOp.get());
-
-		return new ResponseEntity<Cliente>(HttpStatus.OK);
 	}
 }

@@ -12,10 +12,10 @@ import java.util.List;
 public class Compra {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToMany
+    @ManyToMany(cascade=CascadeType.ALL)
     private List<Resumo> resumos;
 
     private int quantidadeProdutos;
@@ -27,19 +27,18 @@ public class Compra {
     private Cliente cliente;
 
     public Compra() {
+        this.resumos = new ArrayList<>();
     }
 
-    public Compra(Cliente cliente) {
-        this.resumos = cliente.getCarrinho().getResumosPedidos();
+    public Compra(Cliente cliente, String data) {
+        this.resumos = new ArrayList<>(cliente.getCarrinho().getResumosPedidos());
         this.quantidadeProdutos = resumos.size();
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-        Date date = new Date();
-        this.data = formatter.format(date);
+        this.data = data;
         this.cliente = cliente;
     }
 
     public Compra(List<Resumo> resumos, int quantidadeProdutos, String data, Cliente cliente) {
-        this.resumos = resumos;
+        this.resumos = new ArrayList<>(resumos);
         this.quantidadeProdutos = quantidadeProdutos;
         this.data = data;
         this.cliente = cliente;
@@ -51,12 +50,13 @@ public class Compra {
         return id;
     }
 
+
     public List<Resumo> getResumos() {
         return resumos;
     }
 
-    public void setResumos(List<Produto> produtos) {
-        this.resumos = resumos;
+    public void setResumos(List<Resumo> resumos) {
+        this.resumos = new ArrayList<>(resumos);
     }
 
     public int getQuantidade() {
@@ -86,4 +86,6 @@ public class Compra {
     public void adicionaResumo(Resumo resumo) { resumos.add(resumo);}
 
     public void removeResumo(Resumo resumo) { resumos.remove(resumo);}
+
+    public void limpaCarrinho() {resumos = new ArrayList<>();}
 }

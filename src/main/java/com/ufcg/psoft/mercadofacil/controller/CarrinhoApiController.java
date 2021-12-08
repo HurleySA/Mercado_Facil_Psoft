@@ -30,111 +30,22 @@ import com.ufcg.psoft.mercadofacil.util.ErroProduto;
 public class CarrinhoApiController {
 
     @Autowired
-    ClienteService clienteService;
-
-    @Autowired
-    ProdutoService produtoService;
-
-    @Autowired
-    ResumoService resumoService;
-
-    @Autowired
-    LoteService loteService;
+    CarrinhoService carrinhoService;
 
 
     @RequestMapping(value = "/carrinho/{idCliente}", method = RequestMethod.GET)
     public ResponseEntity<?> consultaCarrinho(@PathVariable("idCliente") long idCliente) {
-
-        Optional<Cliente> cliente = clienteService.getClienteById(idCliente);
-
-        if (!cliente.isPresent()) {
-            return ErroCliente.erroClienteNaoEnconrtrado(idCliente);
-        }
-        Carrinho carrinho = cliente.get().getCarrinho();
-        List<Resumo> resumos = carrinho.getResumosPedidos();
-
-
-        return new ResponseEntity<List<Resumo>>(resumos, HttpStatus.OK);
-
+        return carrinhoService.listaCarrinhoByClienteId(idCliente);
     }
 
     @RequestMapping(value = "/carrinho/{idCliente}/{idProduto}", method = RequestMethod.POST)
     public ResponseEntity<?> adicionaAoCarrinho(@PathVariable("idCliente") long idCliente, @PathVariable("idProduto") long idProduto, @RequestBody int numItens) {
-
-        Optional<Cliente> optionalCliente = clienteService.getClienteById(idCliente);
-
-        if (!optionalCliente.isPresent()) {
-            return ErroCliente.erroClienteNaoEnconrtrado(idCliente);
-        }
-        Cliente cliente = optionalCliente.get();
-
-        Optional<Produto> optionalProduto = produtoService.getProdutoById(idProduto);
-
-        if (!optionalProduto.isPresent()) {
-            return ErroProduto.erroProdutoNaoEnconrtrado(idProduto);
-        }
-        Produto produto = optionalProduto.get();
-
-        Optional<Resumo> resumoProduto = resumoService.getResumoByProduto(produto);
-        int total = loteService.getTotalByProduto(produto).get();
-
-        if(!produto.isDisponivel()){
-            return new ResponseEntity<CustomErrorType>(new CustomErrorType("PRODUTO NÃO DISPONÍVEL"), HttpStatus.CONFLICT);
-        }
-
-        if(resumoProduto.isPresent()){
-            return new ResponseEntity<CustomErrorType>(new CustomErrorType("RESUMO JÁ CADASTRADO"), HttpStatus.CONFLICT);
-        }
-        if(numItens > total){
-            return new ResponseEntity<CustomErrorType>(new CustomErrorType("NÃO HÁ TANTAS UNIDADES DISPONÍVEL"), HttpStatus.CONFLICT);
-        }
-
-
-
-
-        Resumo resumo = resumoService.criaResumo(numItens, produto);
-        resumoService.salvarResumo(resumo);
-        clienteService.atualizaResumosCliente(resumo, cliente);
-        clienteService.salvarClienteCadastrado(cliente);
-
-
-
-        return new ResponseEntity<Cliente>(cliente, HttpStatus.OK);
-
+        return carrinhoService.adicionarResumoByIds(idCliente, idProduto, numItens);
     }
 
     @RequestMapping(value = "/carrinho/{idCliente}/{idProduto}", method = RequestMethod.DELETE)
     public ResponseEntity<?> removeDoCarrinho(@PathVariable("idCliente") long idCliente, @PathVariable("idProduto") long idProduto){
-
-        Optional<Cliente> optionalCliente = clienteService.getClienteById(idCliente);
-
-        if (!optionalCliente.isPresent()) {
-            return ErroCliente.erroClienteNaoEnconrtrado(idCliente);
-        }
-        Cliente cliente = optionalCliente.get();
-
-        Optional<Produto> optionalProduto = produtoService.getProdutoById(idProduto);
-
-        if (!optionalProduto.isPresent()) {
-            return ErroProduto.erroProdutoNaoEnconrtrado(idProduto);
-        }
-
-        Produto produto = optionalProduto.get();
-
-        Optional<Resumo> optionalResumo = resumoService.getResumoByProduto(produto);
-
-
-        if(!optionalResumo.isPresent() ||  cliente.getCarrinho().getResumosPedidos().size() == 0  || !cliente.getCarrinho().getResumosPedidos().contains(optionalResumo.get())){
-            return new ResponseEntity<CustomErrorType>(new CustomErrorType("NÃO TEM O ITEM NO CARRINHO."), HttpStatus.CONFLICT);
-        }else{
-            Resumo resumo = optionalResumo.get();
-            clienteService.removerResumosCliente(resumo, cliente);
-            clienteService.salvarClienteCadastrado(cliente);
-            resumoService.removerResumo(resumo);
-
-        }
-
-        return new ResponseEntity<Cliente>(cliente, HttpStatus.OK);
+        return carrinhoService.removerResumoCadastradoByIds(idCliente, idProduto);
     }
 
 
