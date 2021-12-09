@@ -73,7 +73,7 @@ public class CompraServiceImpl implements CompraService{
                 }
 
         });
-        Compra compra = compraService.criaCompra(resumosNaoComprados, resumos.size(), "04/12/2021", cliente);
+        Compra compra = compraService.criaCompra(resumosNaoComprados, resumos.size(), java.time.LocalDate.now().toString() , cliente);
 
         resumos.forEach(resumo -> {
             if(!resumo.getComprado()){
