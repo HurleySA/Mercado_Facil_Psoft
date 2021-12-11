@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface ResumoRepository extends JpaRepository<Resumo, Long>{
     List<Resumo> findByProduto(Produto produto);
 
-    Optional<Resumo> findByProdutoAndCliente(Produto produto, Cliente cliente);
+    List<Resumo> findByProdutoAndCliente(Produto produto, Cliente cliente);
 
     List<Resumo> findByCliente(Cliente cliente);
 }

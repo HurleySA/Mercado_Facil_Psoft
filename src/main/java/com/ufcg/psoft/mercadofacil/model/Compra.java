@@ -87,5 +87,4 @@ public class Compra {
 
     public void removeResumo(Resumo resumo) { resumos.remove(resumo);}
 
-    public void limpaCarrinho() {resumos = new ArrayList<>();}
 }

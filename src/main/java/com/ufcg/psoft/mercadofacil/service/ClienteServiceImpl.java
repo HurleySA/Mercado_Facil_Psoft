@@ -3,6 +3,7 @@ package com.ufcg.psoft.mercadofacil.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.ufcg.psoft.mercadofacil.model.Compra;
 import com.ufcg.psoft.mercadofacil.model.Resumo;
 import com.ufcg.psoft.mercadofacil.util.CustomErrorType;
 import com.ufcg.psoft.mercadofacil.util.ErroCliente;
@@ -21,18 +22,15 @@ public class ClienteServiceImpl implements ClienteService {
 	@Autowired
 	private ClienteRepository clienteRepository;
 	
-	public Optional<Cliente> getClienteById(Long id) {
-		return clienteRepository.findById(id);
+	public Cliente getClienteById(Long id) {
+
+		return clienteRepository.findById(id).orElseThrow( () -> new RuntimeException("Cliente não encontrado."));
 	}
 	@Override
 	public ResponseEntity<?> pegaClientePeloId(long id) {
-		Optional<Cliente> clienteOp = this.getClienteById(id);
+		Cliente cliente = this.getClienteById(id);
 
-		if (!clienteOp.isPresent()) {
-			return ErroCliente.erroClienteNaoEnconrtrado(id);
-		}
-
-		return new ResponseEntity<Cliente>(clienteOp.get(), HttpStatus.OK);
+		return new ResponseEntity<Cliente>(cliente, HttpStatus.OK);
 	}
 	
 	public Optional<Cliente> getClienteByCPF(Long cpf) {
@@ -40,14 +38,10 @@ public class ClienteServiceImpl implements ClienteService {
 	}
 
 	public ResponseEntity<?> removerClienteCadastradoById(Long id){
-		Optional<Cliente> clienteOp = this.getClienteById(id);
+		Cliente cliente = this.getClienteById(id);
+		this.clienteRepository.delete(cliente);
 
-		if (!clienteOp.isPresent()) {
-			return ErroCliente.erroClienteNaoEnconrtrado(id);
-		}
-		this.clienteRepository.delete(clienteOp.get());
-
-		return new ResponseEntity<Cliente>(HttpStatus.OK);
+		return new ResponseEntity<Cliente>(cliente, HttpStatus.OK);
 	}
 
 
@@ -84,27 +78,23 @@ public class ClienteServiceImpl implements ClienteService {
 	}
 
 	public  ResponseEntity<?> atualizaClienteById(Long id,ClienteDTO clienteDTO){
-		Optional<Cliente> clienteOp = this.getClienteById(id);
-
-		if (!clienteOp.isPresent()) {
-			return ErroCliente.erroClienteNaoEnconrtrado(id);
-		}
-		clienteOp.get().setIdade(clienteDTO.getIdade());
-		clienteOp.get().setEndereco(clienteDTO.getEndereco());
-		this.salvarClienteCadastrado(clienteOp.get());
+		Cliente cliente = this.getClienteById(id);
+		cliente.setIdade(clienteDTO.getIdade());
+		cliente.setEndereco(clienteDTO.getEndereco());
+		this.salvarClienteCadastrado(cliente);
 
 
-		return new ResponseEntity<Cliente>(clienteOp.get(), HttpStatus.OK);
+		return new ResponseEntity<Cliente>(cliente, HttpStatus.OK);
 	}
 
 	public Cliente atualizaResumosCliente(Resumo resumo, Cliente cliente) {
-		cliente.adicionaResumo(resumo);
+		cliente.adicionaResumoCarrinho(resumo);
 		return cliente;
 	}
 
 	@Override
 	public Cliente removerResumosCliente(Resumo resumo, Cliente cliente) {
-		cliente.removeResumo(resumo);
+		cliente.removeResumoCarrinho(resumo);
 		return cliente;
 	}
 
@@ -114,6 +104,10 @@ public class ClienteServiceImpl implements ClienteService {
 		return cliente;
 	}
 
+	public Cliente atualizaComprasCliente(Compra compra, Cliente cliente) {
+		cliente.adicionaCompra(compra);
+		return cliente;
+	}
 
 
 

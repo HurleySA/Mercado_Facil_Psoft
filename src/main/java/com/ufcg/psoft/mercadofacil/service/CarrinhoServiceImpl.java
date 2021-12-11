@@ -66,12 +66,8 @@ public class CarrinhoServiceImpl implements CarrinhoService {
 
     @Override
     public ResponseEntity<?> listaCarrinhoByClienteId(long idCliente) {
-        Optional<Cliente> cliente = clienteService.getClienteById(idCliente);
-
-        if (!cliente.isPresent()) {
-            return ErroCliente.erroClienteNaoEnconrtrado(idCliente);
-        }
-        Carrinho carrinho = cliente.get().getCarrinho();
+        Cliente cliente = clienteService.getClienteById(idCliente);
+        Carrinho carrinho = cliente.getCarrinho();
         List<Resumo> resumos = carrinho.getResumosPedidos();
 
 
@@ -80,37 +76,28 @@ public class CarrinhoServiceImpl implements CarrinhoService {
 
     @Override
     public ResponseEntity<?> adicionarResumoByIds(long idCliente, long idProduto, int numItens) {
-        Optional<Cliente> optionalCliente = clienteService.getClienteById(idCliente);
-
-        if (!optionalCliente.isPresent()) {
-            return ErroCliente.erroClienteNaoEnconrtrado(idCliente);
-        }
-        Cliente cliente = optionalCliente.get();
-
-        Optional<Produto> optionalProduto = produtoService.getProdutoById(idProduto);
-
-        if (!optionalProduto.isPresent()) {
-            return ErroProduto.erroProdutoNaoEnconrtrado(idProduto);
-        }
-        Produto produto = optionalProduto.get();
-
-        if(!produto.isDisponivel()){
-            return new ResponseEntity<CustomErrorType>(new CustomErrorType("PRODUTO NÃO DISPONÍVEL"), HttpStatus.CONFLICT);
-        }
+        Cliente cliente = clienteService.getClienteById(idCliente);
+        Produto produto = produtoService.getProdutoById(idProduto);
+        produtoService.verificaDisponibilidade(produto);
 
         List<Resumo> resumos = resumoService.getResumoByProduto(produto);
         Resumo resumo;
         if(!resumos.isEmpty()){
-            Boolean resumoCadastrado = resumoService.getResumoByProdutoAndCliente(produto, cliente).isPresent();
-            Boolean resumoComprado = resumoService.getResumoByProdutoAndCliente(produto, cliente).get().getComprado();
-            int total = loteService.getTotalByProduto(produto).get();
+            Boolean resumoCadastrado = !resumoService.getResumoByProdutoAndCliente(produto, cliente).isEmpty();
+            if(resumoCadastrado){
+                Boolean existeResumoNãoComprado = resumoService.verificaSeHáResumoNãoComprado(resumoService.getResumoByProdutoAndCliente(produto, cliente));
+                if(existeResumoNãoComprado){
+                    return new ResponseEntity<CustomErrorType>(new CustomErrorType("RESUMO JÁ CADASTRADO"), HttpStatus.CONFLICT);
+                }
 
-            if(resumoCadastrado && !resumoComprado){
-                return new ResponseEntity<CustomErrorType>(new CustomErrorType("RESUMO JÁ CADASTRADO"), HttpStatus.CONFLICT);
+                int total = loteService.getTotalByProduto(produto).get();
+
+
+                if(numItens > total){
+                    return new ResponseEntity<CustomErrorType>(new CustomErrorType("NÃO HÁ TANTAS UNIDADES DISPONÍVEL"), HttpStatus.CONFLICT);
+                }
             }
-            if(numItens > total){
-                return new ResponseEntity<CustomErrorType>(new CustomErrorType("NÃO HÁ TANTAS UNIDADES DISPONÍVEL"), HttpStatus.CONFLICT);
-            }
+
             resumo = resumoService.criaResumo(numItens, produto, cliente);
             resumoService.salvarResumo(resumo);
             clienteService.atualizaResumosCliente(resumo, cliente);
@@ -120,6 +107,8 @@ public class CarrinhoServiceImpl implements CarrinhoService {
             resumoService.salvarResumo(resumo);
             clienteService.atualizaResumosCliente(resumo, cliente);
             clienteService.salvarClienteCadastrado(cliente);
+
+
         }
 
         return new ResponseEntity<Cliente>(cliente, HttpStatus.OK);
@@ -127,28 +116,17 @@ public class CarrinhoServiceImpl implements CarrinhoService {
 
     @Override
     public ResponseEntity<?> removerResumoCadastradoByIds(long idCliente, long idProduto) {
-        Optional<Cliente> optionalCliente = clienteService.getClienteById(idCliente);
+        Cliente cliente = clienteService.getClienteById(idCliente);
 
-        if (!optionalCliente.isPresent()) {
-            return ErroCliente.erroClienteNaoEnconrtrado(idCliente);
-        }
-        Cliente cliente = optionalCliente.get();
-
-        Optional<Produto> optionalProduto = produtoService.getProdutoById(idProduto);
-
-        if (!optionalProduto.isPresent()) {
-            return ErroProduto.erroProdutoNaoEnconrtrado(idProduto);
-        }
-
-        Produto produto = optionalProduto.get();
+        Produto produto = produtoService.getProdutoById(idProduto);
 
         List<Resumo> optionalResumo = resumoService.getResumoByProduto(produto);
 
 
-        if(optionalResumo.isEmpty() ||  cliente.getCarrinho().getResumosPedidos().size() == 0  || !resumoService.getResumoByProdutoAndCliente(produto, cliente).isPresent()){
+        if(optionalResumo.isEmpty() ||  cliente.getCarrinho().getResumosPedidos().size() == 0  || resumoService.getResumoByProdutoAndCliente(produto, cliente).isEmpty()){
             return new ResponseEntity<CustomErrorType>(new CustomErrorType("NÃO TEM O ITEM NO CARRINHO."), HttpStatus.CONFLICT);
         }else{
-            Resumo resumo = resumoService.getResumoByProdutoAndCliente(produto, cliente).get();
+            Resumo resumo = resumoService.getResumoByProdutoAndCliente(produto, cliente).get(-1);
             clienteService.removerResumosCliente(resumo, cliente);
             clienteService.salvarClienteCadastrado(cliente);
             resumoService.removerResumo(resumo);

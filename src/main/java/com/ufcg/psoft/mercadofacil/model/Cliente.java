@@ -84,9 +84,13 @@ public class Cliente {
 		this.carrinho = carrinho;
 	}
 
-	public void adicionaResumo(Resumo resumo) {this.carrinho.adicionaResumo(resumo);}
+	public void adicionaResumoCarrinho(Resumo resumo) {this.carrinho.adicionaResumo(resumo);}
 
-	public void removeResumo(Resumo resumo) {this.carrinho.removeResumo(resumo);}
+	public void removeResumoCarrinho(Resumo resumo) {this.carrinho.removeResumo(resumo);}
+
+	public void adicionaCompra(Compra compra) {this.compras.add(compra);}
+
+	public void removeCompra(Compra compra) {this.compras.remove(compra);}
 
 	public List<Compra> getCompras() {
 		return compras;

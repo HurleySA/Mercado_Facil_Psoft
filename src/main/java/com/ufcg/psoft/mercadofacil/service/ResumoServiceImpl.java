@@ -29,7 +29,11 @@ public class ResumoServiceImpl implements ResumoService {
     }
 
     public List<Resumo> getResumoByCliente(Cliente cliente) {
-        return resumoRepository.findByCliente(cliente);
+        List<Resumo> resumos = resumoRepository.findByCliente(cliente);
+        if(resumos.isEmpty()){
+            throw new RuntimeException("Cliente não possui produtos no carrinho.");
+        }
+        return resumos;
     }
 
     public List<Resumo> listarResumos() {
@@ -59,7 +63,7 @@ public class ResumoServiceImpl implements ResumoService {
     }
 
     @Override
-    public Optional<Resumo> getResumoByProdutoAndCliente(Produto produto, Cliente cliente) {
+    public List<Resumo> getResumoByProdutoAndCliente(Produto produto, Cliente cliente) {
         return resumoRepository.findByProdutoAndCliente(produto, cliente);
     }
 
@@ -72,6 +76,21 @@ public class ResumoServiceImpl implements ResumoService {
                 resumosNaoComprados.add(resumo);
             }
         });
+        if(resumosNaoComprados.isEmpty()){
+            throw new RuntimeException("Não possui produtos no carrinho.");
+        }
         return resumosNaoComprados;
+    }
+
+    public Boolean verificaSeHáResumoNãoComprado(List<Resumo> resumos) {
+        int i = 0;
+        Boolean existeItemNãoComprado = false;
+        while (i < resumos.size() && !existeItemNãoComprado){
+            if(!resumos.get(i).getComprado()){
+                existeItemNãoComprado = true;
+            }
+            i++;
+        }
+        return existeItemNãoComprado;
     }
 }

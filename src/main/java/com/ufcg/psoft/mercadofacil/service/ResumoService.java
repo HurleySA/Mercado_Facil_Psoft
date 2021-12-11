@@ -27,7 +27,9 @@ public interface ResumoService {
     public Resumo criaResumo(int numItens, Produto produto, Cliente cliente);
 
 
-    Optional<Resumo> getResumoByProdutoAndCliente(Produto produto, Cliente cliente);
+    List<Resumo> getResumoByProdutoAndCliente(Produto produto, Cliente cliente);
 
     List<Resumo> getResumosNaoComprados(List<Resumo> resumos);
+
+    public Boolean verificaSeHáResumoNãoComprado(List<Resumo> resumoByProdutoAndCliente);
 }

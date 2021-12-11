@@ -37,7 +37,7 @@ public class CompraServiceImpl implements CompraService{
         return compraRepository.findAll();
     }
 
-    public Optional<Compra> getCompraById(long id) { return compraRepository.findById(id);
+    public Compra getCompraById(long id) { return compraRepository.findById(id).orElseThrow(() -> new RuntimeException("Compra não existente."));
     }
     public List<Compra> getComprasByCliente(Cliente cliente) {return compraRepository.findByCliente(cliente);}
 
@@ -52,18 +52,8 @@ public class CompraServiceImpl implements CompraService{
 
     @Override
     public ResponseEntity<?> criaCompraById(long idCliente) {
-
-        Optional<Cliente> optionalCliente = clienteService.getClienteById(idCliente);
-
-        if (!optionalCliente.isPresent()) {
-            return ErroCliente.erroClienteNaoEnconrtrado(idCliente);
-        }
-        Cliente cliente = optionalCliente.get();
-
+        Cliente cliente = clienteService.getClienteById(idCliente);
         List<Resumo> resumos = resumoService.getResumoByCliente(cliente);
-        if(resumos.isEmpty()){
-            return new ResponseEntity<CustomErrorType>(new CustomErrorType("NÃO POSSUI PRODUTOS NO CARRINHO."), HttpStatus.CONFLICT);
-        }
         List<Resumo> resumosNaoComprados = resumoService.getResumosNaoComprados(resumos);
         resumosNaoComprados.forEach(resumo -> {
                 if(resumo.getQuantidade() == loteService.getTotalByProduto(resumo.getProduto()).get()){
@@ -81,6 +71,7 @@ public class CompraServiceImpl implements CompraService{
             }
         });
         compraService.salvarCompra(compra);
+        clienteService.atualizaComprasCliente(compra, cliente);
         clienteService.limpaCarrinho(cliente);
         clienteService.salvarClienteCadastrado(cliente);
 
@@ -91,12 +82,8 @@ public class CompraServiceImpl implements CompraService{
 
     @Override
     public ResponseEntity<?> listarComprasResponse(Long idCliente) {
-        Optional<Cliente> cliente = clienteService.getClienteById(idCliente);
-
-        if (!cliente.isPresent()) {
-            return ErroCliente.erroClienteNaoEnconrtrado(idCliente);
-        }
-        List<Compra> compras = cliente.get().getCompras();
+        Cliente cliente = clienteService.getClienteById(idCliente);
+        List<Compra> compras = cliente.getCompras();
 
         if(compras.size() == 0){
             return new ResponseEntity<CustomErrorType>(new CustomErrorType("NÃO POSSUI COMPRAS."), HttpStatus.CONFLICT);
@@ -108,22 +95,16 @@ public class CompraServiceImpl implements CompraService{
 
     @Override
     public ResponseEntity<?> listarComprasByIds(long idCliente, long idCompra) {
-        Optional<Cliente> cliente = clienteService.getClienteById(idCliente);
+        Cliente cliente = clienteService.getClienteById(idCliente);
+        Compra compra = this.getCompraById(idCompra);
+        this.verificaCompraDeCliente(cliente, compra);
+        return new ResponseEntity<Compra>(compra, HttpStatus.OK);
+    }
 
-        if (!cliente.isPresent()) {
-            return ErroCliente.erroClienteNaoEnconrtrado(idCliente);
+    private void verificaCompraDeCliente(Cliente cliente, Compra compra) {
+        if(!cliente.getCompras().contains(compra)){
+            throw new RuntimeException("Compra não pertence ao cliente.");
         }
-
-        Optional<Compra> compra = compraService.getCompraById(idCompra);
-
-        if (!compra.isPresent()) {
-            return new ResponseEntity<CustomErrorType>(new CustomErrorType("COMPRA NÃO EXISTENTE."), HttpStatus.CONFLICT);
-        }
-
-        if(!cliente.get().getCompras().contains(compra.get())){
-            return new ResponseEntity<CustomErrorType>(new CustomErrorType("COMPRA NÃO PERTENTE AO CLIENTE;"), HttpStatus.CONFLICT);
-        }
-        return new ResponseEntity<Compra>(compra.get(), HttpStatus.OK);
     }
 
 }
