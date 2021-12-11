@@ -42,13 +42,7 @@ public class LoteServiceImpl implements LoteService {
 
 	@Override
 	public ResponseEntity<?> getLoteByProdutoIdResponse(long idProduto) {
-
-		Optional<Produto> optionalProduto = produtoService.getProdutoById(idProduto);
-
-		if (!optionalProduto.isPresent()) {
-			return ErroProduto.erroProdutoNaoEnconrtrado(idProduto);
-		}
-		Produto produto = optionalProduto.get();
+		Produto produto = produtoService.getProdutoById(idProduto);
 
 		List<Lote> lotes = this.getByProduto(produto);
 
@@ -62,31 +56,16 @@ public class LoteServiceImpl implements LoteService {
 
 	@Override
 	public List<Lote> getLoteByProdutoId(long idProduto) {
-		Optional<Produto> optionalProduto = produtoService.getProdutoById(idProduto);
-
-		if (!optionalProduto.isPresent()) {
-			throw new EntityExistsException();
-		}
-		Produto produto = optionalProduto.get();
+		Produto produto = produtoService.getProdutoById(idProduto);
 
 		return this.getByProduto(produto);
 	}
 
 	@Override
 	public ResponseEntity<?> criaLoteById(long idProduto, int numItens) {
-		Optional<Produto> optionalProduto = produtoService.getProdutoById(idProduto);
-
-		if (!optionalProduto.isPresent()) {
-			return ErroProduto.erroProdutoNaoEnconrtrado(idProduto);
-		}
-
-		Produto produto = optionalProduto.get();
+		Produto produto = produtoService.getProdutoById(idProduto);
 		Lote lote = this.criaLote(numItens, produto);
-
-		if (!produto.isDisponivel() & (numItens > 0)) {
-			produto.tornaDisponivel();
-			produtoService.salvarProdutoCadastrado(produto);
-		}
+		produtoService.tornaDisponivel(produto);
 
 		this.salvarLote(lote);
 
@@ -125,6 +104,9 @@ public class LoteServiceImpl implements LoteService {
 	}
 
 	public Lote criaLote(int numItens, Produto produto) {
+		if(numItens <= 0){
+			throw new RuntimeException("Quantidade abaixo de 1 produto.");
+		}
 		Lote lote = new Lote(produto, numItens);
 		return lote;
 	}

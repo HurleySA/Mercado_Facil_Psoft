@@ -12,7 +12,7 @@ public class Resumo {
     @OneToOne
     private Produto produto;
     private int quantidade;
-    private  Boolean comprado;
+    private  Boolean isComprado;
 
     @ManyToOne
     private Cliente cliente;
@@ -24,15 +24,15 @@ public class Resumo {
         this.produto = produto;
         this.quantidade = quantidade;
         this.cliente = cliente;
-        this.comprado = false;
+        this.isComprado = false;
     }
 
     public Boolean getComprado() {
-        return comprado;
+        return isComprado;
     }
 
     public void setComprado(Boolean comprado) {
-        this.comprado = comprado;
+        this.isComprado = comprado;
     }
 
     public Long getId() {

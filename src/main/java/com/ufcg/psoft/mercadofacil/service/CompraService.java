@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface CompraService {
     public List<Compra> listarCompras();
 
-    public Optional<Compra> getCompraById(long id);
+    public Compra getCompraById(long id);
 
     public List<Compra> getComprasByCliente(Cliente cliente);
 

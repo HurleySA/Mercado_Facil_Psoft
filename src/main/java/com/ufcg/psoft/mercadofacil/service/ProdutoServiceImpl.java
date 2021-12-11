@@ -19,8 +19,8 @@ public class ProdutoServiceImpl implements ProdutoService {
 	@Autowired
 	private ProdutoRepository produtoRepository;
 	
-	public Optional<Produto> getProdutoById(long id) {
-		return produtoRepository.findById(id);
+	public Produto getProdutoById(long id) {
+		return produtoRepository.findById(id).orElseThrow(()-> new RuntimeException("Produto não encontrado."));
 	}
 	
 	public List<Produto> getProdutoByCodigoBarra(String codigo) {
@@ -41,7 +41,7 @@ public class ProdutoServiceImpl implements ProdutoService {
 	}
 
 	public void salvarProdutoCadastrado(Produto produto) {
-		produtoRepository.save(produto);		
+		produtoRepository.save(produto);
 	}
 
 	public List<Produto> listarProdutos() {
@@ -57,8 +57,6 @@ public class ProdutoServiceImpl implements ProdutoService {
 
 		Produto produto = new Produto(produtoDTO.getNome(), produtoDTO.getFabricante(), produtoDTO.getCodigoBarra(),
 				produtoDTO.getPreco(), produtoDTO.getCategoria());
-
-		produto.tornaDisponivel();
 		this.salvarProdutoCadastrado(produto);
 
 		return new ResponseEntity<Produto>(produto, HttpStatus.CREATED);
@@ -76,13 +74,7 @@ public class ProdutoServiceImpl implements ProdutoService {
 	}
 
 	public ResponseEntity<?> atualizaProdutoById(Long id, ProdutoDTO produtoDTO) {
-		Optional<Produto> optionalProduto = this.getProdutoById(id);
-
-		if (!optionalProduto.isPresent()) {
-			return ErroProduto.erroProdutoNaoEnconrtrado(id);
-		}
-
-		Produto produto = optionalProduto.get();
+		Produto produto = this.getProdutoById(id);
 
 		this.atualizaProduto(produtoDTO, produto);
 		this.salvarProdutoCadastrado(produto);
@@ -93,7 +85,7 @@ public class ProdutoServiceImpl implements ProdutoService {
 
 	@Override
 	public ResponseEntity<?> getProduto(long id) {
-		Optional<Produto> optionalProduto = this.getProdutoById(id);
+		Optional<Produto> optionalProduto = produtoRepository.findById(id);
 
 		if (!optionalProduto.isPresent()) {
 			return ErroProduto.erroProdutoNaoEnconrtrado(id);
@@ -104,15 +96,11 @@ public class ProdutoServiceImpl implements ProdutoService {
 
 	@Override
 	public ResponseEntity<?> removerProdutoCadastradoById(long id) {
-		Optional<Produto> optionalProduto = this.getProdutoById(id);
+		Produto produto = this.getProdutoById(id);
 
-		if (!optionalProduto.isPresent()) {
-			return ErroProduto.erroProdutoNaoEnconrtrado(id);
-		}
+		produtoRepository.delete(produto);
 
-		this.removerProdutoCadastrado(optionalProduto.get());
-
-		return new ResponseEntity<Produto>(HttpStatus.OK);
+		return new ResponseEntity<Produto>(produto, HttpStatus.OK);
 	}
 
 	@Override
@@ -123,5 +111,19 @@ public class ProdutoServiceImpl implements ProdutoService {
 			return ErroProduto.erroSemProdutosCadastrados();
 		}
 		return new ResponseEntity<List<Produto>>(produtos, HttpStatus.OK);
+	}
+
+	@Override
+	public void verificaDisponibilidade(Produto produto) {
+		if(!produto.isDisponivel()){
+			throw new RuntimeException("Produto não disponivel.");
+		}
+
+	}
+
+	@Override
+	public void tornaDisponivel(Produto produto) {
+		produto.tornaDisponivel();
+		this.salvarProdutoCadastrado(produto);
 	}
 }
