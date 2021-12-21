@@ -27,8 +27,6 @@ public class ResumoApiController {
 
     @Autowired
     ResumoService resumoService;
-
-
     @RequestMapping(value = "/resumos", method = RequestMethod.GET)
     public ResponseEntity<?> listarResumos() {
         return resumoService.listarResumosResponse();

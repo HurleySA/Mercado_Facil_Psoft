@@ -59,7 +59,10 @@ public class CompraServiceImpl implements CompraService{
                 if(resumo.getQuantidade() == loteService.getTotalByProduto(resumo.getProduto()).get()){
                     loteService.removerLote(loteService.getLoteByProduto(resumo.getProduto()));
                 }else{
-                    loteService.atualizaLote(loteService.getLoteByProduto(resumo.getProduto()), resumo.getQuantidade());
+                    if(resumo.getQuantidade() < loteService.getTotalByProduto(resumo.getProduto()).get()){
+                        loteService.atualizaLote(loteService.getLoteByProduto(resumo.getProduto()), resumo.getQuantidade());
+                    }
+
                 }
 
         });

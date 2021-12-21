@@ -87,14 +87,14 @@ public class CarrinhoServiceImpl implements CarrinhoService {
             if(resumoCadastrado){
                 Boolean existeResumoNãoComprado = resumoService.verificaSeHáResumoNãoComprado(resumoService.getResumoByProdutoAndCliente(produto, cliente));
                 if(existeResumoNãoComprado){
-                    return new ResponseEntity<CustomErrorType>(new CustomErrorType("RESUMO JÁ CADASTRADO"), HttpStatus.CONFLICT);
+                    return new ResponseEntity<CustomErrorType>(new CustomErrorType("RESUMO JÁ CADASTRADO"), HttpStatus.BAD_REQUEST);
                 }
 
                 int total = loteService.getTotalByProduto(produto).get();
 
 
                 if(numItens > total){
-                    return new ResponseEntity<CustomErrorType>(new CustomErrorType("NÃO HÁ TANTAS UNIDADES DISPONÍVEL"), HttpStatus.CONFLICT);
+                    return new ResponseEntity<CustomErrorType>(new CustomErrorType("NÃO HÁ TANTAS UNIDADES DISPONÍVEL"), HttpStatus.BAD_REQUEST);
                 }
             }
 
@@ -103,6 +103,12 @@ public class CarrinhoServiceImpl implements CarrinhoService {
             clienteService.atualizaResumosCliente(resumo, cliente);
             clienteService.salvarClienteCadastrado(cliente);
         }else{
+            int total = loteService.getTotalByProduto(produto).get();
+
+
+            if(numItens > total){
+                return new ResponseEntity<CustomErrorType>(new CustomErrorType("NÃO HÁ TANTAS UNIDADES DISPONÍVEL"), HttpStatus.BAD_REQUEST);
+            }
             resumo = resumoService.criaResumo(numItens, produto, cliente);
             resumoService.salvarResumo(resumo);
             clienteService.atualizaResumosCliente(resumo, cliente);
@@ -111,7 +117,7 @@ public class CarrinhoServiceImpl implements CarrinhoService {
 
         }
 
-        return new ResponseEntity<Cliente>(cliente, HttpStatus.OK);
+        return new ResponseEntity<Cliente>(cliente, HttpStatus.CREATED);
     }
 
     @Override
@@ -120,13 +126,13 @@ public class CarrinhoServiceImpl implements CarrinhoService {
 
         Produto produto = produtoService.getProdutoById(idProduto);
 
-        List<Resumo> optionalResumo = resumoService.getResumoByProduto(produto);
+        List<Resumo> resumos = resumoService.getResumoByProduto(produto);
 
 
-        if(optionalResumo.isEmpty() ||  cliente.getCarrinho().getResumosPedidos().size() == 0  || resumoService.getResumoByProdutoAndCliente(produto, cliente).isEmpty()){
-            return new ResponseEntity<CustomErrorType>(new CustomErrorType("NÃO TEM O ITEM NO CARRINHO."), HttpStatus.CONFLICT);
+        if(resumos.isEmpty() ||  cliente.getCarrinho().getResumosPedidos().size() == 0  || resumoService.getResumoByProdutoAndCliente(produto, cliente).isEmpty()){
+            return new ResponseEntity<CustomErrorType>(new CustomErrorType("NÃO TEM O ITEM NO CARRINHO."), HttpStatus.BAD_REQUEST);
         }else{
-            Resumo resumo = resumoService.getResumoByProdutoAndCliente(produto, cliente).get(-1);
+            Resumo resumo = resumoService.getResumoByProdutoAndCliente(produto, cliente).get(resumoService.getResumoByProdutoAndCliente(produto, cliente).size() - 1);
             clienteService.removerResumosCliente(resumo, cliente);
             clienteService.salvarClienteCadastrado(cliente);
             resumoService.removerResumo(resumo);

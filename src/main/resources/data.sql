@@ -22,17 +22,3 @@ insert into lote (ID, PRODUTO_ID, NUMERO_DE_ITENS)
 values(2, 10004, 10);
 
 update produto set IS_DISPONIVEL = TRUE where ID = 10004;
-
-insert into cliente (ID, CPF, NOME, IDADE, ENDERECO)
-values(1001, 10020030006, 'Fulano', 23, 'Rua tal');
-
-insert into resumo (ID, PRODUTO_ID, QUANTIDADE, CLIENTE_ID, IS_COMPRADO)
-values(1, 10005, 5,1001, false);
-
-insert into carrinho
-values(1);
-
-insert into carrinho_resumos_pedidos
-values(1, 1);
-
-update cliente set CARRINHO_ID = 1 where ID = 1001;
