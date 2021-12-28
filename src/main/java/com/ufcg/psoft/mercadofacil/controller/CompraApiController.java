@@ -13,8 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api")
@@ -36,9 +38,15 @@ public class CompraApiController {
     @Autowired
     LoteService loteService;
 
+    @RequestMapping(value = "/compra/pagamento", method = RequestMethod.GET)
+    public ResponseEntity<?> listaFormasPagamento(){
+        List<String> formasPagamento = Arrays.asList("Cartão de Crédito", "Boleto", "Paypal");
+        return new ResponseEntity<List<String>>(formasPagamento, HttpStatus.OK);
+    }
+
     @RequestMapping(value="/compra/{idCliente}", method = RequestMethod.POST)
-    public ResponseEntity<?> realizaCompra(@PathVariable("idCliente") long idCliente){
-        return compraService.criaCompraById(idCliente);
+    public ResponseEntity<?> realizaCompra(@PathVariable("idCliente") long idCliente, @RequestBody String formaPagamento){
+        return compraService.criaCompraById(idCliente, formaPagamento);
     }
 
     @RequestMapping(value = "/compras/{idCliente}", method = RequestMethod.GET)

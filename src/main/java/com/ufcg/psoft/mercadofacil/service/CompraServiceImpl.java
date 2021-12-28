@@ -41,8 +41,8 @@ public class CompraServiceImpl implements CompraService{
     }
     public List<Compra> getComprasByCliente(Cliente cliente) {return compraRepository.findByCliente(cliente);}
 
-    public Compra criaCompra(List<Resumo> resumos, int quantidadeProdutos, String data,Cliente cliente){
-        Compra compra = new Compra(resumos, quantidadeProdutos, data,cliente);
+    public Compra criaCompra(List<Resumo> resumos, int quantidadeProdutos, String data,String formaPagamento,Cliente cliente){
+        Compra compra = new Compra(resumos, quantidadeProdutos, data,formaPagamento, cliente);
         return compra;
     }
 
@@ -51,7 +51,7 @@ public class CompraServiceImpl implements CompraService{
     public void removerCompra(Compra compra){ compraRepository.delete(compra);}
 
     @Override
-    public ResponseEntity<?> criaCompraById(long idCliente) {
+    public ResponseEntity<?> criaCompraById(long idCliente, String formaPagamento) {
         Cliente cliente = clienteService.getClienteById(idCliente);
         List<Resumo> resumos = resumoService.getResumoByCliente(cliente);
         List<Resumo> resumosNaoComprados = resumoService.getResumosNaoComprados(resumos);
@@ -66,7 +66,7 @@ public class CompraServiceImpl implements CompraService{
                 }
 
         });
-        Compra compra = compraService.criaCompra(resumosNaoComprados, resumos.size(), java.time.LocalDate.now().toString() , cliente);
+        Compra compra = compraService.criaCompra(resumosNaoComprados, resumos.size(), java.time.LocalDate.now().toString(), formaPagamento , cliente);
 
         resumos.forEach(resumo -> {
             if(!resumo.getComprado()){

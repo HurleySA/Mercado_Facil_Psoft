@@ -16,13 +16,13 @@ public interface CompraService {
 
     public List<Compra> getComprasByCliente(Cliente cliente);
 
-    public Compra criaCompra(List<Resumo> resumos, int quantidadeProdutos, String data, Cliente cliente);
+    public Compra criaCompra(List<Resumo> resumos, int quantidadeProdutos, String data, String formaPagamento, Cliente cliente);
 
     public void salvarCompra(Compra compra);
 
     public void removerCompra(Compra compra);
 
-    ResponseEntity<?> criaCompraById(long idCliente);
+    ResponseEntity<?> criaCompraById(long idCliente, String formaPagamento);
 
     ResponseEntity<?> listarComprasResponse(Long idCliente);
 

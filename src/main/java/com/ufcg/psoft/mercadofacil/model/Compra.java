@@ -3,10 +3,10 @@ package com.ufcg.psoft.mercadofacil.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
-import java.text.SimpleDateFormat;
+import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Entity
 public class Compra {
@@ -20,6 +20,8 @@ public class Compra {
 
     private int quantidadeProdutos;
     private String data;
+    private String formaPagamento;
+    private BigDecimal total;
 
     @ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false)
@@ -30,26 +32,59 @@ public class Compra {
         this.resumos = new ArrayList<>();
     }
 
-    public Compra(Cliente cliente, String data) {
+    public Compra(Cliente cliente, String data, String formaPagamento) {
         this.resumos = new ArrayList<>(cliente.getCarrinho().getResumosPedidos());
         this.quantidadeProdutos = resumos.size();
         this.data = data;
+        this.formaPagamento = formaPagamento;
         this.cliente = cliente;
+        this.total = getTotalComprado(resumos);
     }
 
-    public Compra(List<Resumo> resumos, int quantidadeProdutos, String data, Cliente cliente) {
+    public Compra(List<Resumo> resumos, int quantidadeProdutos, String data, String formaPagamento, Cliente cliente) {
         this.resumos = new ArrayList<>(resumos);
         this.quantidadeProdutos = quantidadeProdutos;
         this.data = data;
+        this.formaPagamento = formaPagamento;
         this.cliente = cliente;
-
+        this.total = getTotalComprado(resumos);
     }
 
+    protected BigDecimal getTotalComprado(List<Resumo> resumos){
+        AtomicReference<BigDecimal> total = new AtomicReference<>(new BigDecimal(0));
+        resumos.forEach(resumo -> {
+            total.getAndSet(new BigDecimal(resumo.getQuantidade()).multiply(resumo.getProduto().getPreco()).add(total.get()));
+        } );
+        return total.get();
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
+    }
 
     public Long getId() {
         return id;
     }
 
+    public int getQuantidadeProdutos() {
+        return quantidadeProdutos;
+    }
+
+    public void setQuantidadeProdutos(int quantidadeProdutos) {
+        this.quantidadeProdutos = quantidadeProdutos;
+    }
+
+    public String getFormaPagamento() {
+        return formaPagamento;
+    }
+
+    public void setFormaPagamento(String formaPagamento) {
+        this.formaPagamento = formaPagamento;
+    }
 
     public List<Resumo> getResumos() {
         return resumos;
