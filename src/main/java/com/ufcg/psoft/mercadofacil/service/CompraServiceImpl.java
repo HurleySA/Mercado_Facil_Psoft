@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 @Service
@@ -53,6 +54,7 @@ public class CompraServiceImpl implements CompraService{
     @Override
     public ResponseEntity<?> criaCompraById(long idCliente, String formaPagamento) {
         Cliente cliente = clienteService.getClienteById(idCliente);
+        verificaFormaPagamento(formaPagamento);
         List<Resumo> resumos = resumoService.getResumoByCliente(cliente);
         List<Resumo> resumosNaoComprados = resumoService.getResumosNaoComprados(resumos);
         resumosNaoComprados.forEach(resumo -> {
@@ -108,6 +110,15 @@ public class CompraServiceImpl implements CompraService{
         if(!cliente.getCompras().contains(compra)){
             throw new RuntimeException("Compra não pertence ao cliente.");
         }
+    }
+
+    private boolean verificaFormaPagamento(String pagamento){
+        List<String> formasPagamento = Arrays.asList("Cartão de Crédito", "Boleto", "Paypal");
+        Boolean contain = formasPagamento.contains(pagamento);
+        if(!contain){
+            throw new RuntimeException("Forma de pagamento não aceita");
+        }
+        return contain;
     }
 
 }

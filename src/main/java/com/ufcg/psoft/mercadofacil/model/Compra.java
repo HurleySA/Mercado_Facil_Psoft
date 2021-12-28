@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Entity
@@ -38,7 +39,7 @@ public class Compra {
         this.data = data;
         this.formaPagamento = formaPagamento;
         this.cliente = cliente;
-        this.total = getTotalComprado(resumos);
+        this.total = getTotalComprado(resumos, formaPagamento);
     }
 
     public Compra(List<Resumo> resumos, int quantidadeProdutos, String data, String formaPagamento, Cliente cliente) {
@@ -47,15 +48,18 @@ public class Compra {
         this.data = data;
         this.formaPagamento = formaPagamento;
         this.cliente = cliente;
-        this.total = getTotalComprado(resumos);
+        this.total = getTotalComprado(resumos, formaPagamento);
     }
 
-    protected BigDecimal getTotalComprado(List<Resumo> resumos){
+    protected BigDecimal getTotalComprado(List<Resumo> resumos, String formaPagamento){
         AtomicReference<BigDecimal> total = new AtomicReference<>(new BigDecimal(0));
         resumos.forEach(resumo -> {
             total.getAndSet(new BigDecimal(resumo.getQuantidade()).multiply(resumo.getProduto().getPreco()).add(total.get()));
         } );
+        if(Objects.equals(formaPagamento, "Paypal")) total.set(total.get().multiply(BigDecimal.valueOf(1.2)));
+        if (Objects.equals(formaPagamento, "Cartão de Crédito")) total.set(total.get().multiply(BigDecimal.valueOf(1.5)));
         return total.get();
+
     }
 
     public BigDecimal getTotal() {

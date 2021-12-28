@@ -23,13 +23,11 @@ public class ClienteServiceImpl implements ClienteService {
 	private ClienteRepository clienteRepository;
 	
 	public Cliente getClienteById(Long id) {
-
 		return clienteRepository.findById(id).orElseThrow( () -> new RuntimeException("Cliente não encontrado."));
 	}
 	@Override
 	public ResponseEntity<?> pegaClientePeloId(long id) {
 		Cliente cliente = this.getClienteById(id);
-
 		return new ResponseEntity<Cliente>(cliente, HttpStatus.OK);
 	}
 	
