@@ -21,6 +21,8 @@ public class Cliente {
 
 	private String endereco;
 
+	private String perfil;
+
 	@OneToOne(cascade=CascadeType.ALL)
 	private Carrinho carrinho;
 
@@ -30,22 +32,24 @@ public class Cliente {
 
 	public Cliente() {}
 
-	public Cliente(Long cpf, String nome, Integer idade, String endereco) {
+	public Cliente(Long cpf, String nome, Integer idade, String endereco, String perfil) {
 		this.CPF = cpf;
 		this.nome = nome;
 		this.idade = idade;
 		this.endereco = endereco;
 		this.carrinho = new Carrinho();
 		this.compras = new ArrayList<Compra>();
+		this.perfil = perfil;
 	}
 
-	public Cliente(Long cpf, String nome, Integer idade, String endereco, Carrinho carrinho, List<Compra> compras) {
+	public Cliente(Long cpf, String nome, Integer idade, String endereco, Carrinho carrinho, List<Compra> compras, String perfil) {
 		this.CPF = cpf;
 		this.nome = nome;
 		this.idade = idade;
 		this.endereco = endereco;
 		this.carrinho = carrinho;
 		this.compras =  new ArrayList<Compra>(compras);
+		this.perfil = perfil;
 	}
 
 	public Long getId() {
@@ -62,6 +66,14 @@ public class Cliente {
 
 	public Integer getIdade() {
 		return idade;
+	}
+
+	public String getPerfil() {
+		return perfil;
+	}
+
+	public void setPerfil(String perfil) {
+		this.perfil = perfil;
 	}
 
 	public void setIdade(Integer idade) {

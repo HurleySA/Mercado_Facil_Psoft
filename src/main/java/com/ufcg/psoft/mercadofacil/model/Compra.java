@@ -39,7 +39,7 @@ public class Compra {
         this.data = data;
         this.formaPagamento = formaPagamento;
         this.cliente = cliente;
-        this.total = getTotalComprado(resumos, formaPagamento);
+        this.total = getTotalComprado(resumos, formaPagamento, cliente.getPerfil());
     }
 
     public Compra(List<Resumo> resumos, int quantidadeProdutos, String data, String formaPagamento, Cliente cliente) {
@@ -48,16 +48,20 @@ public class Compra {
         this.data = data;
         this.formaPagamento = formaPagamento;
         this.cliente = cliente;
-        this.total = getTotalComprado(resumos, formaPagamento);
+        this.total = getTotalComprado(resumos, formaPagamento, cliente.getPerfil());
     }
 
-    protected BigDecimal getTotalComprado(List<Resumo> resumos, String formaPagamento){
+    protected BigDecimal getTotalComprado(List<Resumo> resumos, String formaPagamento, String perfil){
         AtomicReference<BigDecimal> total = new AtomicReference<>(new BigDecimal(0));
+        AtomicReference<Integer> totalItens = new AtomicReference<>(0);
         resumos.forEach(resumo -> {
             total.getAndSet(new BigDecimal(resumo.getQuantidade()).multiply(resumo.getProduto().getPreco()).add(total.get()));
-        } );
-        if(Objects.equals(formaPagamento, "Paypal")) total.set(total.get().multiply(BigDecimal.valueOf(1.2)));
-        if (Objects.equals(formaPagamento, "Cartão de Crédito")) total.set(total.get().multiply(BigDecimal.valueOf(1.5)));
+            totalItens.updateAndGet(v -> v + resumo.getQuantidade());
+        });
+        if(Objects.equals(formaPagamento, "Paypal")) total.set(total.get().multiply(BigDecimal.valueOf(1.02)));
+        if (Objects.equals(formaPagamento, "Cartão de Crédito")) total.set(total.get().multiply(BigDecimal.valueOf(1.05)));
+        if(Objects.equals(perfil, "Especial") && totalItens.get() > 10 ) total.set(total.get().multiply(BigDecimal.valueOf(0.9)));
+        if(Objects.equals(perfil, "Premium") && totalItens.get() > 5) total.set(total.get().multiply(BigDecimal.valueOf(0.9)));
         return total.get();
 
     }

@@ -16,6 +16,10 @@ public class ClienteDTO {
 
 	private String endereco;
 
+	private String perfil;
+
+	public String getPerfil() { return perfil;}
+
 	public String getNome() {
 		return nome;
 	}

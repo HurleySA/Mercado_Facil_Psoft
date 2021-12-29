@@ -1,5 +1,6 @@
 package com.ufcg.psoft.mercadofacil.service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,9 +69,13 @@ public class ClienteServiceImpl implements ClienteService {
 		if (clienteOp.isPresent()) {
 			return ErroCliente.erroClienteJaCadastrado(clienteDTO);
 		}
+		List<String> tiposPermitidos = Arrays.asList("Normal", "Especial", "Premium");
+		if (!tiposPermitidos.contains(clienteDTO.getPerfil())) {
+			throw new RuntimeException("Perfil de Cliente não cadastrado.");
+		}
 
 		Cliente cliente = new Cliente(clienteDTO.getCPF(), clienteDTO.getNome(),
-				clienteDTO.getIdade(), clienteDTO.getEndereco());
+				clienteDTO.getIdade(), clienteDTO.getEndereco(), clienteDTO.getPerfil());
 		this.salvarClienteCadastrado(cliente);
 		return new ResponseEntity<Cliente>(cliente, HttpStatus.CREATED);
 	}
