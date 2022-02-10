@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 public interface LoteService {
 	public List<Lote> getByProduto(Produto produto);
 
-	public AtomicInteger getTotalByProduto(Produto produto);
+	public int getTotalByProduto(Produto produto);
 
 	public ResponseEntity<?> listarLotesResponse();
 

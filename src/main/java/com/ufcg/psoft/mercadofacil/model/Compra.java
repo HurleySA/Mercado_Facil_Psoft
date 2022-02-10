@@ -22,7 +22,7 @@ public class Compra {
     private int quantidadeProdutos;
     private String data;
     private String formaPagamento;
-    private BigDecimal total;
+    private float totalPago;
 
     @ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false)
@@ -39,7 +39,7 @@ public class Compra {
         this.data = data;
         this.formaPagamento = formaPagamento;
         this.cliente = cliente;
-        this.total = getTotalComprado(resumos, formaPagamento, cliente.getPerfil());
+        this.totalPago = getTotalComprado(resumos, formaPagamento, cliente.getPerfil());
     }
 
     public Compra(List<Resumo> resumos, int quantidadeProdutos, String data, String formaPagamento, Cliente cliente) {
@@ -48,30 +48,66 @@ public class Compra {
         this.data = data;
         this.formaPagamento = formaPagamento;
         this.cliente = cliente;
-        this.total = getTotalComprado(resumos, formaPagamento, cliente.getPerfil());
+        this.totalPago = getTotalComprado(resumos, formaPagamento, cliente.getPerfil());
     }
 
-    protected BigDecimal getTotalComprado(List<Resumo> resumos, String formaPagamento, String perfil){
-        AtomicReference<BigDecimal> total = new AtomicReference<>(new BigDecimal(0));
-        AtomicReference<Integer> totalItens = new AtomicReference<>(0);
-        resumos.forEach(resumo -> {
-            total.getAndSet(new BigDecimal(resumo.getQuantidade()).multiply(resumo.getProduto().getPreco()).add(total.get()));
-            totalItens.updateAndGet(v -> v + resumo.getQuantidade());
-        });
-        if(Objects.equals(formaPagamento, "Paypal")) total.set(total.get().multiply(BigDecimal.valueOf(1.02)));
-        if (Objects.equals(formaPagamento, "Cartão de Crédito")) total.set(total.get().multiply(BigDecimal.valueOf(1.05)));
-        if(Objects.equals(perfil, "Especial") && totalItens.get() > 10 ) total.set(total.get().multiply(BigDecimal.valueOf(0.9)));
-        if(Objects.equals(perfil, "Premium") && totalItens.get() > 5) total.set(total.get().multiply(BigDecimal.valueOf(0.9)));
-        return total.get();
+    protected float getTotalComprado(List<Resumo> resumos, String formaPagamento, String perfil){
+        float total = getTotalInicial(resumos);
+        int totalItem = getTotalItens(resumos);
+        return getTotalDescontos(total, totalItem, formaPagamento, perfil);
 
     }
 
-    public BigDecimal getTotal() {
+    protected  float getTotalFormaPagamento(float total, String formaPagamento){
+        if(formaPagamento.equals("Paypal")){
+            total *= 1.02;
+        }
+        if (formaPagamento.equals("Cartão de Crédito")) {
+            total *= 1.05;
+        };
         return total;
     }
 
-    public void setTotal(BigDecimal total) {
-        this.total = total;
+    protected float getTotalDescontosPerfilItens(float total, int totalItem, String perfil){
+        if(perfil.equals("Especial") && totalItem > 10 ){
+            total *= 0.5;
+        };
+        if(perfil.equals("Premium") && totalItem > 5){
+            total *= 0.5;
+        };
+        return total;
+    }
+
+    protected float getTotalDescontos(float total, int totalItem, String formaPagamento, String perfil){
+        float totalFormaPagamento = getTotalFormaPagamento(total, formaPagamento);
+        float totalDescontos = getTotalDescontosPerfilItens(totalFormaPagamento, totalItem, perfil);
+
+        return totalDescontos;
+    }
+
+
+    protected float getTotalInicial(List<Resumo> resumos){
+        int total= 0;
+        for(int i = 0; i < resumos.size(); i++){
+            total += resumos.get(i).getTotalComprado();
+        }
+        return total;
+    }
+
+    protected int getTotalItens(List<Resumo> resumos){
+        int totalItem = 0;
+        for(int i = 0; i < resumos.size(); i++){
+            totalItem += resumos.get(i).getQuantidade();
+        }
+        return totalItem;
+    }
+
+    public float getTotal() {
+        return totalPago;
+    }
+
+    public void setTotal(float total) {
+        this.totalPago = total;
     }
 
     public Long getId() {

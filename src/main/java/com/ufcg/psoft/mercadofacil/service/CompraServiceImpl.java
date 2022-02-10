@@ -58,10 +58,10 @@ public class CompraServiceImpl implements CompraService{
         List<Resumo> resumos = resumoService.getResumoByCliente(cliente);
         List<Resumo> resumosNaoComprados = resumoService.getResumosNaoComprados(resumos);
         resumosNaoComprados.forEach(resumo -> {
-                if(resumo.getQuantidade() == loteService.getTotalByProduto(resumo.getProduto()).get()){
+                if(resumo.getQuantidade() == loteService.getTotalByProduto(resumo.getProduto())){
                     loteService.removerLote(loteService.getLoteByProduto(resumo.getProduto()));
                 }else{
-                    if(resumo.getQuantidade() < loteService.getTotalByProduto(resumo.getProduto()).get()){
+                    if(resumo.getQuantidade() < loteService.getTotalByProduto(resumo.getProduto())){
                         loteService.atualizaLote(loteService.getLoteByProduto(resumo.getProduto()), resumo.getQuantidade());
                     }
 

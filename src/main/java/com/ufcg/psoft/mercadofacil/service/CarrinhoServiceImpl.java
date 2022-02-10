@@ -90,7 +90,7 @@ public class CarrinhoServiceImpl implements CarrinhoService {
                     return new ResponseEntity<CustomErrorType>(new CustomErrorType("RESUMO JÁ CADASTRADO"), HttpStatus.BAD_REQUEST);
                 }
 
-                int total = loteService.getTotalByProduto(produto).get();
+                int total = loteService.getTotalByProduto(produto);
 
 
                 if(numItens > total){
@@ -103,7 +103,7 @@ public class CarrinhoServiceImpl implements CarrinhoService {
             clienteService.atualizaResumosCliente(resumo, cliente);
             clienteService.salvarClienteCadastrado(cliente);
         }else{
-            int total = loteService.getTotalByProduto(produto).get();
+            int total = loteService.getTotalByProduto(produto);
 
 
             if(numItens > total){

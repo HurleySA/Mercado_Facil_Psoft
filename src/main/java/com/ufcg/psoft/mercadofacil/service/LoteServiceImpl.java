@@ -73,13 +73,14 @@ public class LoteServiceImpl implements LoteService {
 	}
 
 	@Override
-	public AtomicInteger getTotalByProduto(Produto produto) {
+	public int getTotalByProduto(Produto produto) {
+		int totalItem = 0;
 		List<Lote> lotes = getByProduto(produto);
 		AtomicInteger total = new AtomicInteger();
-		lotes.forEach(lote -> {
-			total.addAndGet(lote.getNumeroDeItens());
-		});
-		return total;
+		for(int i = 0; i < lotes.size(); i++){
+			totalItem += lotes.get(i).getNumeroDeItens();
+		}
+		return totalItem;
 	}
 
 	public ResponseEntity<?> listarLotesResponse() {

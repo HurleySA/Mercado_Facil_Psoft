@@ -1,6 +1,5 @@
 package com.ufcg.psoft.mercadofacil.model;
 
-import java.math.BigDecimal;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,7 +16,7 @@ public class Produto {
 	
 	private String nome;
 
-	private BigDecimal preco;
+	private float preco;
 
 	private String codigoBarra;
 
@@ -30,7 +29,7 @@ public class Produto {
 	public Produto() {	}
 
 	public Produto(String nome, String codigoBarra, String fabricante,
-			BigDecimal preco, String nomeCategoria) {
+			float preco, String nomeCategoria) {
 		
 		this.nome = nome;
 		this.preco = preco;
@@ -52,11 +51,11 @@ public class Produto {
 		this.nome = nome;
 	}
 
-	public BigDecimal getPreco() {
+	public float getPreco() {
 		return preco;
 	}
 
-	public void setPreco(BigDecimal preco) {
+	public void setPreco(float preco) {
 		this.preco = preco;
 	}
 

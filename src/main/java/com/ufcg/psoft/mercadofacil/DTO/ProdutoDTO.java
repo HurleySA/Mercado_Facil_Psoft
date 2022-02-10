@@ -6,7 +6,7 @@ public class ProdutoDTO {
 
 	private String nome;
 
-	private BigDecimal preco;
+	private float preco;
 
 	private String codigoBarra;
 
@@ -22,11 +22,11 @@ public class ProdutoDTO {
 		this.nome = nome;
 	}
 
-	public BigDecimal getPreco() {
+	public float getPreco() {
 		return preco;
 	}
 
-	public void setPreco(BigDecimal preco) {
+	public void setPreco(float preco) {
 		this.preco = preco;
 	}
 

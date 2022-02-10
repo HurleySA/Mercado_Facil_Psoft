@@ -55,6 +55,10 @@ public class Resumo {
         this.quantidade = quantidade;
     }
 
+    public float getTotalComprado() {
+        return quantidade * produto.getPreco();
+    }
+
     @Override
     public String toString() {
         return "Resumo{" +
