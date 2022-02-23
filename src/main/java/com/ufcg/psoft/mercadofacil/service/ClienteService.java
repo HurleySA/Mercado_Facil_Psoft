@@ -37,4 +37,6 @@ public interface ClienteService {
 
 	public Cliente atualizaComprasCliente(Compra compra, Cliente cliente);
 	ResponseEntity<?> pegaClientePeloId(long id);
+
+	public Cliente atualizaFormaEntrega(String formaEntrega, Cliente cliente);
 }

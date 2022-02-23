@@ -75,7 +75,7 @@ public class CarrinhoServiceImpl implements CarrinhoService {
     }
 
     @Override
-    public ResponseEntity<?> adicionarResumoByIds(long idCliente, long idProduto, int numItens) {
+    public ResponseEntity<?> adicionarResumoByIds(long idCliente, long idProduto, int numItens, String formaEntrega) {
         Cliente cliente = clienteService.getClienteById(idCliente);
         Produto produto = produtoService.getProdutoById(idProduto);
         produtoService.verificaDisponibilidade(produto);
@@ -101,6 +101,7 @@ public class CarrinhoServiceImpl implements CarrinhoService {
             resumo = resumoService.criaResumo(numItens, produto, cliente);
             resumoService.salvarResumo(resumo);
             clienteService.atualizaResumosCliente(resumo, cliente);
+            clienteService.atualizaFormaEntrega(formaEntrega, cliente);
             clienteService.salvarClienteCadastrado(cliente);
         }else{
             int total = loteService.getTotalByProduto(produto);
@@ -112,9 +113,8 @@ public class CarrinhoServiceImpl implements CarrinhoService {
             resumo = resumoService.criaResumo(numItens, produto, cliente);
             resumoService.salvarResumo(resumo);
             clienteService.atualizaResumosCliente(resumo, cliente);
+            clienteService.atualizaFormaEntrega(formaEntrega, cliente);
             clienteService.salvarClienteCadastrado(cliente);
-
-
         }
 
         return new ResponseEntity<Cliente>(cliente, HttpStatus.CREATED);

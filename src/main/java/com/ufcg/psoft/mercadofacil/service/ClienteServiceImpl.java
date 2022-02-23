@@ -33,7 +33,9 @@ public class ClienteServiceImpl implements ClienteService {
 		Cliente cliente = this.getClienteById(id);
 		return new ResponseEntity<Cliente>(cliente, HttpStatus.OK);
 	}
-	
+
+
+
 	public Optional<Cliente> getClienteByCPF(Long cpf) {
 		return clienteRepository.findByCPF(cpf);
 	}
@@ -104,6 +106,12 @@ public class ClienteServiceImpl implements ClienteService {
 
 	public Cliente atualizaResumosCliente(Resumo resumo, Cliente cliente) {
 		cliente.adicionaResumoCarrinho(resumo);
+		return cliente;
+	}
+
+	@Override
+	public Cliente atualizaFormaEntrega(String formaEntrega, Cliente cliente) {
+		cliente.atualizaFormaEntrega(formaEntrega);
 		return cliente;
 	}
 

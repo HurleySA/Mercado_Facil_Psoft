@@ -39,7 +39,7 @@ public abstract class Cliente {
 		this.nome = nome;
 		this.idade = idade;
 		this.endereco = endereco;
-		this.carrinho = new Carrinho();
+		this.carrinho = new Carrinho("Padrão");
 		this.compras = new ArrayList<Compra>();
 		this.perfil = perfil;
 	}
@@ -119,4 +119,8 @@ public abstract class Cliente {
 	}
 
 	public abstract double descontoCompras(double valor, int quantidade);
+
+	public void atualizaFormaEntrega(String formaEntrega) {
+		{this.carrinho.setFormaEntrega(formaEntrega);}
+	}
 }
