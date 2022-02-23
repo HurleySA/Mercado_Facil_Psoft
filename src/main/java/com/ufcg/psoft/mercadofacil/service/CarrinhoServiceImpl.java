@@ -1,9 +1,6 @@
 package com.ufcg.psoft.mercadofacil.service;
 
-import com.ufcg.psoft.mercadofacil.model.Carrinho;
-import com.ufcg.psoft.mercadofacil.model.Cliente;
-import com.ufcg.psoft.mercadofacil.model.Produto;
-import com.ufcg.psoft.mercadofacil.model.Resumo;
+import com.ufcg.psoft.mercadofacil.model.*;
 import com.ufcg.psoft.mercadofacil.repository.CarrinhoRepository;
 import com.ufcg.psoft.mercadofacil.util.CustomErrorType;
 import com.ufcg.psoft.mercadofacil.util.ErroCliente;
@@ -13,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -80,6 +78,21 @@ public class CarrinhoServiceImpl implements CarrinhoService {
         Produto produto = produtoService.getProdutoById(idProduto);
         produtoService.verificaDisponibilidade(produto);
 
+        List<String> entregasPermitidos = Arrays.asList("Retirada", "Padrão ", "Express");
+        if (!entregasPermitidos.contains(formaEntrega)) {
+            throw new RuntimeException("Forma de entrega não cadastrado.");
+        }
+
+        FormaEntrega newFormaEntrega;
+        if(formaEntrega.equals("Retirada")){
+            newFormaEntrega = new FormaEntregaRetirada();
+        }else if(formaEntrega.equals("Padrão")){
+            newFormaEntrega = new FormaEntregaPadrão();
+        } else{
+            newFormaEntrega = new FormaEntregaExpress();
+        }
+
+
         List<Resumo> resumos = resumoService.getResumoByProduto(produto);
         Resumo resumo;
         if(!resumos.isEmpty()){
@@ -101,7 +114,7 @@ public class CarrinhoServiceImpl implements CarrinhoService {
             resumo = resumoService.criaResumo(numItens, produto, cliente);
             resumoService.salvarResumo(resumo);
             clienteService.atualizaResumosCliente(resumo, cliente);
-            clienteService.atualizaFormaEntrega(formaEntrega, cliente);
+            clienteService.atualizaFormaEntrega(newFormaEntrega, cliente);
             clienteService.salvarClienteCadastrado(cliente);
         }else{
             int total = loteService.getTotalByProduto(produto);
@@ -113,7 +126,7 @@ public class CarrinhoServiceImpl implements CarrinhoService {
             resumo = resumoService.criaResumo(numItens, produto, cliente);
             resumoService.salvarResumo(resumo);
             clienteService.atualizaResumosCliente(resumo, cliente);
-            clienteService.atualizaFormaEntrega(formaEntrega, cliente);
+            clienteService.atualizaFormaEntrega(newFormaEntrega, cliente);
             clienteService.salvarClienteCadastrado(cliente);
         }
 

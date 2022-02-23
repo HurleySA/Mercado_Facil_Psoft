@@ -11,7 +11,8 @@ public class Carrinho {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String formaEntrega;
+    @OneToOne(cascade=CascadeType.PERSIST)
+    private FormaEntrega formaEntrega;
 
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Resumo> resumosPedidos;
@@ -19,29 +20,30 @@ public class Carrinho {
     @OneToOne(mappedBy = "carrinho")
     private Cliente cliente;
 
-    public Carrinho(String formaEntrega){
+    public Carrinho(FormaEntrega formaEntrega){
         this.resumosPedidos = new ArrayList<>();
         this.formaEntrega = formaEntrega;
     }
 
-    public Carrinho(List<Resumo> resumosPedidos, String formaEntrega) {
+    public Carrinho(List<Resumo> resumosPedidos, FormaEntrega formaEntrega) {
         this.resumosPedidos = new ArrayList<>(resumosPedidos);
         this.formaEntrega = formaEntrega;
     }
 
     public Carrinho() {
-
+        this.resumosPedidos = new ArrayList<>();
+        this.formaEntrega = new FormaEntregaPadrão();
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getFormaEntrega() {
+    public FormaEntrega getFormaEntrega() {
         return formaEntrega;
     }
 
-    public void setFormaEntrega(String formaEntrega) {
+    public void setFormaEntrega(FormaEntrega formaEntrega) {
         this.formaEntrega = formaEntrega;
     }
 

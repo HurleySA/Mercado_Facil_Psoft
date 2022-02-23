@@ -110,7 +110,7 @@ public class ClienteServiceImpl implements ClienteService {
 	}
 
 	@Override
-	public Cliente atualizaFormaEntrega(String formaEntrega, Cliente cliente) {
+	public Cliente atualizaFormaEntrega(FormaEntrega formaEntrega, Cliente cliente) {
 		cliente.atualizaFormaEntrega(formaEntrega);
 		return cliente;
 	}
