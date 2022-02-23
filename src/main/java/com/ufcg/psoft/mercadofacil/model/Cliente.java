@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Cliente {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "TIPO")
+public abstract class Cliente {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -115,4 +117,6 @@ public class Cliente {
 	public void limpaCarrinho() {
 		this.carrinho.limpaCarrinho();
 	}
+
+	public abstract double descontoCompras(double valor, int quantidade);
 }

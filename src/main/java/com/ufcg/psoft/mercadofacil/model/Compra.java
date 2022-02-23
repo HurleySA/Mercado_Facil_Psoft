@@ -22,7 +22,7 @@ public class Compra {
     private int quantidadeProdutos;
     private String data;
     private String formaPagamento;
-    private float totalPago;
+    private double totalPago;
 
     @ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false)
@@ -51,14 +51,14 @@ public class Compra {
         this.totalPago = getTotalComprado(resumos, formaPagamento, cliente.getPerfil());
     }
 
-    protected float getTotalComprado(List<Resumo> resumos, String formaPagamento, String perfil){
-        float total = getTotalInicial(resumos);
+    protected double getTotalComprado(List<Resumo> resumos, String formaPagamento, String perfil){
+        double total = getTotalInicial(resumos);
         int totalItem = getTotalItens(resumos);
         return getTotalDescontos(total, totalItem, formaPagamento, perfil);
 
     }
 
-    protected  float getTotalFormaPagamento(float total, String formaPagamento){
+    protected  double getTotalFormaPagamento(double total, String formaPagamento){
         if(formaPagamento.equals("Paypal")){
             total *= 1.02;
         }
@@ -68,7 +68,7 @@ public class Compra {
         return total;
     }
 
-    protected float getTotalDescontosPerfilItens(float total, int totalItem, String perfil){
+    protected double getTotalDescontosPerfilItens(double total, int totalItem, String perfil){
         if(perfil.equals("Especial") && totalItem > 10 ){
             total *= 0.5;
         };
@@ -78,15 +78,16 @@ public class Compra {
         return total;
     }
 
-    protected float getTotalDescontos(float total, int totalItem, String formaPagamento, String perfil){
-        float totalFormaPagamento = getTotalFormaPagamento(total, formaPagamento);
-        float totalDescontos = getTotalDescontosPerfilItens(totalFormaPagamento, totalItem, perfil);
+    protected double getTotalDescontos(double total, int totalItem, String formaPagamento, String perfil){
+        double totalFormaPagamento = getTotalFormaPagamento(total, formaPagamento);
+        double totalDescontos = cliente.descontoCompras(totalFormaPagamento, totalItem);
+
 
         return totalDescontos;
     }
 
 
-    protected float getTotalInicial(List<Resumo> resumos){
+    protected double getTotalInicial(List<Resumo> resumos){
         int total= 0;
         for(int i = 0; i < resumos.size(); i++){
             total += resumos.get(i).getTotalComprado();
@@ -102,11 +103,11 @@ public class Compra {
         return totalItem;
     }
 
-    public float getTotal() {
+    public double getTotal() {
         return totalPago;
     }
 
-    public void setTotal(float total) {
+    public void setTotal(double total) {
         this.totalPago = total;
     }
 

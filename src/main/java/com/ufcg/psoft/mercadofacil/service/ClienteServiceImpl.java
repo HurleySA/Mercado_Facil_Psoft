@@ -4,8 +4,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import com.ufcg.psoft.mercadofacil.model.Compra;
-import com.ufcg.psoft.mercadofacil.model.Resumo;
+
+import com.ufcg.psoft.mercadofacil.model.*;
+import com.ufcg.psoft.mercadofacil.model.ClienteEspecial;
+import com.ufcg.psoft.mercadofacil.model.ClienteNormal;
+import com.ufcg.psoft.mercadofacil.model.ClientePremium;
 import com.ufcg.psoft.mercadofacil.util.CustomErrorType;
 import com.ufcg.psoft.mercadofacil.util.ErroCliente;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.ufcg.psoft.mercadofacil.DTO.ClienteDTO;
-import com.ufcg.psoft.mercadofacil.model.Cliente;
 import com.ufcg.psoft.mercadofacil.repository.ClienteRepository;
 
 @Service
@@ -74,8 +76,18 @@ public class ClienteServiceImpl implements ClienteService {
 			throw new RuntimeException("Perfil de Cliente não cadastrado.");
 		}
 
-		Cliente cliente = new Cliente(clienteDTO.getCPF(), clienteDTO.getNome(),
-				clienteDTO.getIdade(), clienteDTO.getEndereco(), clienteDTO.getPerfil());
+		Cliente cliente;
+		if(clienteDTO.getPerfil().equals("Normal")){
+			cliente = new ClienteNormal(clienteDTO.getCPF(), clienteDTO.getNome(),
+					clienteDTO.getIdade(), clienteDTO.getEndereco(), clienteDTO.getPerfil());
+		}else if(clienteDTO.getPerfil().equals("Especial")){
+			cliente = new ClienteEspecial(clienteDTO.getCPF(), clienteDTO.getNome(),
+					clienteDTO.getIdade(), clienteDTO.getEndereco(), clienteDTO.getPerfil());
+		} else{
+			cliente = new ClientePremium(clienteDTO.getCPF(), clienteDTO.getNome(),
+					clienteDTO.getIdade(), clienteDTO.getEndereco(), clienteDTO.getPerfil());
+		}
+
 		this.salvarClienteCadastrado(cliente);
 		return new ResponseEntity<Cliente>(cliente, HttpStatus.CREATED);
 	}
