@@ -113,6 +113,17 @@ public class CarrinhoServiceImpl implements CarrinhoService {
 
             resumo = resumoService.criaResumo(numItens, produto, cliente);
             resumoService.salvarResumo(resumo);
+
+            List<Resumo> newResumos = resumoService.getResumoByProduto(produto);
+            boolean existRefrigeracao = newResumos.stream().anyMatch(res ->  res.getProduto().getCategoria().equals("REFRIGERACAO"));
+            boolean existFragil = newResumos.stream().anyMatch(res ->  res.getProduto().getCategoria().equals("FRAGIL"));
+
+            if(existRefrigeracao){
+                newFormaEntrega = new FormaEntregaRefrigeracao();
+            }
+            if(existFragil && !existRefrigeracao){
+                newFormaEntrega = new FormaEntregaFragil();
+            }
             clienteService.atualizaResumosCliente(resumo, cliente);
             clienteService.atualizaFormaEntrega(newFormaEntrega, cliente);
             clienteService.salvarClienteCadastrado(cliente);
@@ -123,8 +134,19 @@ public class CarrinhoServiceImpl implements CarrinhoService {
             if(numItens > total){
                 return new ResponseEntity<CustomErrorType>(new CustomErrorType("NÃO HÁ TANTAS UNIDADES DISPONÍVEL"), HttpStatus.BAD_REQUEST);
             }
+
+
+
             resumo = resumoService.criaResumo(numItens, produto, cliente);
             resumoService.salvarResumo(resumo);
+
+            List<Resumo> newResumos = resumoService.getResumoByProduto(produto);
+            boolean existRefrigeracao = newResumos.stream().anyMatch(res ->  res.getProduto().getCategoria().equals("REFRIGERACAO"));
+            boolean existFragil = newResumos.stream().anyMatch(res ->  res.getProduto().getCategoria().equals("FRAGIL"));
+
+            if(existRefrigeracao){
+                newFormaEntrega = new FormaEntregaRefrigeracao();
+            }
             clienteService.atualizaResumosCliente(resumo, cliente);
             clienteService.atualizaFormaEntrega(newFormaEntrega, cliente);
             clienteService.salvarClienteCadastrado(cliente);
