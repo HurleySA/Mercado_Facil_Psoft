@@ -12,7 +12,7 @@ public class FormaEntregaPadrão extends FormaEntrega{
 
     @Override
     public double calcular() {
-        return 20;
+        return 20 * getEstrategia().calcular();
     }
 
 }

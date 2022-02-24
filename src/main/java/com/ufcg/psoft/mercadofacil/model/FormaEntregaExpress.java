@@ -12,7 +12,7 @@ public class FormaEntregaExpress extends FormaEntrega{
 
     @Override
     public double calcular() {
-        return 50;
+        return 50 * getEstrategia().calcular();
     }
 
 }

@@ -12,7 +12,7 @@ public class FormaEntregaRetirada extends FormaEntrega{
 
     @Override
     public double calcular() {
-        return 0;
+        return 0 * getEstrategia().calcular();
     }
 
 
