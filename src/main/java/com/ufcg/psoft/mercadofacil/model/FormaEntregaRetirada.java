@@ -11,12 +11,9 @@ public class FormaEntregaRetirada extends FormaEntrega{
     }
 
     @Override
-    public String getTipoEntrega() {
-        return "Retirada";
-    }
-
-    @Override
-    public double getTotalEntrega() {
+    public double calcular() {
         return 0;
     }
+
+
 }

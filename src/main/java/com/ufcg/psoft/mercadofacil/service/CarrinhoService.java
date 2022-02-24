@@ -27,4 +27,6 @@ public interface CarrinhoService {
     ResponseEntity<?> adicionarResumoByIds(long idCliente, long idProduto, int numItens, String formaEntrega);
 
     ResponseEntity<?> removerResumoCadastradoByIds(long idCliente, long idProduto);
+
+    ResponseEntity<?> calculaEntrega(long idCliente);
 }

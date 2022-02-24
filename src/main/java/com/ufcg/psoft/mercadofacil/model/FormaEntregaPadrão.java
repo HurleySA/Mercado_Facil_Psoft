@@ -9,12 +9,10 @@ public class FormaEntregaPadrão extends FormaEntrega{
     public FormaEntregaPadrão() {
         super("Padrão", 20);
     }
+
     @Override
-    public String getTipoEntrega() {
-        return "Padrão";
-    }
-    @Override
-    public double getTotalEntrega() {
+    public double calcular() {
         return 20;
     }
+
 }

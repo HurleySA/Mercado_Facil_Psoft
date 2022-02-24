@@ -22,7 +22,21 @@ public abstract class FormaEntrega {
         this.totalEntrega = totalEntrega;
     }
 
+    public String getTipoEntrega() {
+        return tipoEntrega;
+    }
 
-    public  abstract  String getTipoEntrega();
-    public abstract double getTotalEntrega();
+    public void setTipoEntrega(String tipoEntrega) {
+        this.tipoEntrega = tipoEntrega;
+    }
+
+    public double getTotalEntrega() {
+        return totalEntrega;
+    }
+
+    public void setTotalEntrega(double totalEntrega) {
+        this.totalEntrega = totalEntrega;
+    }
+
+    public abstract double calcular();
 }

@@ -9,12 +9,10 @@ public class FormaEntregaExpress extends FormaEntrega{
     public FormaEntregaExpress() {
         super("Express", 50);
     }
+
     @Override
-    public String getTipoEntrega() {
-        return "Express";
-    }
-    @Override
-    public double getTotalEntrega() {
+    public double calcular() {
         return 50;
     }
+
 }

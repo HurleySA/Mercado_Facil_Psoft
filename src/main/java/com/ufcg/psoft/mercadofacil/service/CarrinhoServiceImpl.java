@@ -78,7 +78,7 @@ public class CarrinhoServiceImpl implements CarrinhoService {
         Produto produto = produtoService.getProdutoById(idProduto);
         produtoService.verificaDisponibilidade(produto);
 
-        List<String> entregasPermitidos = Arrays.asList("Retirada", "Padrão ", "Express");
+        List<String> entregasPermitidos = Arrays.asList("Retirada", "Padrão", "Express");
         if (!entregasPermitidos.contains(formaEntrega)) {
             throw new RuntimeException("Forma de entrega não cadastrado.");
         }
@@ -115,15 +115,8 @@ public class CarrinhoServiceImpl implements CarrinhoService {
             resumoService.salvarResumo(resumo);
 
             List<Resumo> newResumos = resumoService.getResumoByProduto(produto);
-            boolean existRefrigeracao = newResumos.stream().anyMatch(res ->  res.getProduto().getCategoria().equals("REFRIGERACAO"));
-            boolean existFragil = newResumos.stream().anyMatch(res ->  res.getProduto().getCategoria().equals("FRAGIL"));
 
-            if(existRefrigeracao){
-                newFormaEntrega = new FormaEntregaRefrigeracao();
-            }
-            if(existFragil && !existRefrigeracao){
-                newFormaEntrega = new FormaEntregaFragil();
-            }
+
             clienteService.atualizaResumosCliente(resumo, cliente);
             clienteService.atualizaFormaEntrega(newFormaEntrega, cliente);
             clienteService.salvarClienteCadastrado(cliente);
@@ -143,10 +136,6 @@ public class CarrinhoServiceImpl implements CarrinhoService {
             List<Resumo> newResumos = resumoService.getResumoByProduto(produto);
             boolean existRefrigeracao = newResumos.stream().anyMatch(res ->  res.getProduto().getCategoria().equals("REFRIGERACAO"));
             boolean existFragil = newResumos.stream().anyMatch(res ->  res.getProduto().getCategoria().equals("FRAGIL"));
-
-            if(existRefrigeracao){
-                newFormaEntrega = new FormaEntregaRefrigeracao();
-            }
             clienteService.atualizaResumosCliente(resumo, cliente);
             clienteService.atualizaFormaEntrega(newFormaEntrega, cliente);
             clienteService.salvarClienteCadastrado(cliente);
@@ -176,6 +165,15 @@ public class CarrinhoServiceImpl implements CarrinhoService {
 
         return new ResponseEntity<Cliente>(cliente, HttpStatus.OK);
 
+    }
+
+    @Override
+    public ResponseEntity<?> calculaEntrega(long idCliente) {
+        Cliente cliente = clienteService.getClienteById(idCliente);
+
+        double total = cliente.getCarrinho().calculaEntrega();
+
+        return new ResponseEntity<Double>(total, HttpStatus.OK);
     }
 
 }

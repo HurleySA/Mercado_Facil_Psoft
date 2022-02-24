@@ -32,7 +32,7 @@ public class Carrinho {
 
     public Carrinho() {
         this.resumosPedidos = new ArrayList<>();
-        this.formaEntrega = new FormaEntregaPadrão();
+        this.formaEntrega = new FormaEntregaRetirada();
     }
 
     public Long getId() {
@@ -54,6 +54,10 @@ public class Carrinho {
     public void adicionaResumo(Resumo resumo) { resumosPedidos.add(resumo);}
 
     public void removeResumo(Resumo resumo) { resumosPedidos.remove(resumo);}
+
+    public double calculaEntrega(){
+        return formaEntrega.calcular();
+    }
 
     public void limpaCarrinho() {resumosPedidos = new ArrayList<>();}
     public void setResumosPedidos(List<Resumo> resumosPedidos) {
