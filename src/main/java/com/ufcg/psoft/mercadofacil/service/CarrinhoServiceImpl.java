@@ -115,7 +115,7 @@ public class CarrinhoServiceImpl implements CarrinhoService {
             resumoService.salvarResumo(resumo);
 
             List<Resumo> newResumos = resumoService.getResumoByProduto(produto);
-
+            newFormaEntrega.modificaEstrategia(newResumos);
 
             clienteService.atualizaResumosCliente(resumo, cliente);
             clienteService.atualizaFormaEntrega(newFormaEntrega, cliente);
@@ -128,14 +128,11 @@ public class CarrinhoServiceImpl implements CarrinhoService {
                 return new ResponseEntity<CustomErrorType>(new CustomErrorType("NÃO HÁ TANTAS UNIDADES DISPONÍVEL"), HttpStatus.BAD_REQUEST);
             }
 
-
-
             resumo = resumoService.criaResumo(numItens, produto, cliente);
             resumoService.salvarResumo(resumo);
 
             List<Resumo> newResumos = resumoService.getResumoByProduto(produto);
-            boolean existRefrigeracao = newResumos.stream().anyMatch(res ->  res.getProduto().getCategoria().equals("REFRIGERACAO"));
-            boolean existFragil = newResumos.stream().anyMatch(res ->  res.getProduto().getCategoria().equals("FRAGIL"));
+            newFormaEntrega.modificaEstrategia(newResumos);
             clienteService.atualizaResumosCliente(resumo, cliente);
             clienteService.atualizaFormaEntrega(newFormaEntrega, cliente);
             clienteService.salvarClienteCadastrado(cliente);

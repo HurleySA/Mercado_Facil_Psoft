@@ -11,7 +11,7 @@ insert into produto (ID, NOME, CODIGO_BARRA, FABRICANTE, IS_DISPONIVEL, CATEGORI
 values(10004,'Agua Sanitaria', '87654324-C', 'Dragao', FALSE, 'REFRIGERACAO', 30);
 
 insert into produto (ID, NOME, CODIGO_BARRA, FABRICANTE, IS_DISPONIVEL, CATEGORIA, PRECO)
-values(10005,'Creme Dental', '87654325-C', 'Colgate', FALSE, 'HIGIENE', 25);
+values(10005,'Creme Dental', '87654325-C', 'Colgate', FALSE, 'FRAGIL', 25);
 
 insert into lote (ID, PRODUTO_ID, NUMERO_DE_ITENS)
 values(1, 10005, 5);

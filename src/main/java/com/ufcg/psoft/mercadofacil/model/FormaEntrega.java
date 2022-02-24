@@ -1,6 +1,7 @@
 package com.ufcg.psoft.mercadofacil.model;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -55,6 +56,13 @@ public abstract class FormaEntrega {
 
     public void setEstrategia(Calculo estrategia) {
         this.estrategia = estrategia;
+    }
+
+    public void modificaEstrategia(List<Resumo> resumos){
+        boolean existRefrigeracao = resumos.stream().anyMatch(res ->  res.getProduto().getCategoria().equals("REFRIGERACAO"));
+        boolean existFragil = resumos.stream().anyMatch(res ->  res.getProduto().getCategoria().equals("FRAGIL"));
+        if(existRefrigeracao) setEstrategia(new CalculoRefrigeracao());
+        if(existFragil && !existRefrigeracao) setEstrategia(new CalculoFragil());
     }
 
     public abstract double calcular();
