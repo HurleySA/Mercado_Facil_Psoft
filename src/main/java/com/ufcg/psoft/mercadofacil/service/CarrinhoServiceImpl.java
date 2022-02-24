@@ -114,8 +114,9 @@ public class CarrinhoServiceImpl implements CarrinhoService {
             resumo = resumoService.criaResumo(numItens, produto, cliente);
             resumoService.salvarResumo(resumo);
 
-            List<Resumo> newResumos = resumoService.getResumoByProduto(produto);
-            newFormaEntrega.modificaEstrategia(newResumos);
+            List<Resumo> newResumos = resumoService.getResumoByCliente(cliente);
+            List<Resumo> resumosNaoComprados = resumoService.getResumosNaoComprados(newResumos);
+            newFormaEntrega.modificaEstrategia(resumosNaoComprados);
 
             clienteService.atualizaResumosCliente(resumo, cliente);
             clienteService.atualizaFormaEntrega(newFormaEntrega, cliente);
@@ -131,8 +132,9 @@ public class CarrinhoServiceImpl implements CarrinhoService {
             resumo = resumoService.criaResumo(numItens, produto, cliente);
             resumoService.salvarResumo(resumo);
 
-            List<Resumo> newResumos = resumoService.getResumoByProduto(produto);
-            newFormaEntrega.modificaEstrategia(newResumos);
+            List<Resumo> newResumos = resumoService.getResumoByCliente(cliente);
+            List<Resumo> resumosNaoComprados = resumoService.getResumosNaoComprados(newResumos);
+            newFormaEntrega.modificaEstrategia(resumosNaoComprados);
             clienteService.atualizaResumosCliente(resumo, cliente);
             clienteService.atualizaFormaEntrega(newFormaEntrega, cliente);
             clienteService.salvarClienteCadastrado(cliente);
@@ -171,6 +173,27 @@ public class CarrinhoServiceImpl implements CarrinhoService {
         double total = cliente.getCarrinho().calculaEntrega();
 
         return new ResponseEntity<Double>(total, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<?> modificaFormaEntrega(long idCliente, String formaEntrega) {
+        Cliente cliente = clienteService.getClienteById(idCliente);
+
+        List<String> entregasPermitidos = Arrays.asList("Retirada", "Padrão", "Express");
+        if (!entregasPermitidos.contains(formaEntrega)) {
+            throw new RuntimeException("Forma de entrega não cadastrado.");
+        }
+        FormaEntrega newFormaEntrega;
+        if(formaEntrega.equals("Retirada")){
+            newFormaEntrega = new FormaEntregaRetirada();
+        }else if(formaEntrega.equals("Padrão")){
+            newFormaEntrega = new FormaEntregaPadrão();
+        } else{
+            newFormaEntrega = new FormaEntregaExpress();
+        }
+        cliente.getCarrinho().setFormaEntrega(newFormaEntrega);
+
+        return new ResponseEntity<Cliente>(cliente, HttpStatus.OK);
     }
 
 }

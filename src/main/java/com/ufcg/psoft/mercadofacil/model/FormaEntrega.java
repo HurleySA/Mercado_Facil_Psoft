@@ -61,7 +61,7 @@ public abstract class FormaEntrega {
     public void modificaEstrategia(List<Resumo> resumos){
         boolean existRefrigeracao = resumos.stream().anyMatch(res ->  res.getProduto().getCategoria().equals("REFRIGERACAO"));
         boolean existFragil = resumos.stream().anyMatch(res ->  res.getProduto().getCategoria().equals("FRAGIL"));
-        if(existRefrigeracao) setEstrategia(new CalculoRefrigeracao());
+        if(existRefrigeracao && !existFragil) setEstrategia(new CalculoRefrigeracao());
         if(existFragil && !existRefrigeracao) setEstrategia(new CalculoFragil());
     }
 

@@ -43,6 +43,11 @@ public class CarrinhoApiController {
         return carrinhoService.calculaEntrega(idCliente);
     }
 
+    @RequestMapping(value = "/carrinho/{idCliente}/{formaEntrega}", method = RequestMethod.POST)
+    public ResponseEntity<?> adicionaAoCarrinho(@PathVariable("idCliente") long idCliente, @PathVariable String formaEntrega) {
+        return carrinhoService.modificaFormaEntrega(idCliente,formaEntrega);
+    }
+
     @RequestMapping(value = "/carrinho/{idCliente}/{idProduto}/{formaEntrega}", method = RequestMethod.POST)
     public ResponseEntity<?> adicionaAoCarrinho(@PathVariable("idCliente") long idCliente, @PathVariable("idProduto") long idProduto, @RequestBody int numItens, @PathVariable String formaEntrega) {
         return carrinhoService.adicionarResumoByIds(idCliente, idProduto, numItens,formaEntrega);

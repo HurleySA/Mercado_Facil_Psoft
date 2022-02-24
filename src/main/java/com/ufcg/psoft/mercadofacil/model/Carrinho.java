@@ -72,4 +72,7 @@ public class Carrinho {
     }
 
 
+    public void modificaFormaEntrega(String formaEntrega) {
+        this.formaEntrega.setTipoEntrega(formaEntrega);
+    }
 }
