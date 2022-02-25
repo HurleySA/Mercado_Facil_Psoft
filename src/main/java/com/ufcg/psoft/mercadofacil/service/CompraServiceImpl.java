@@ -1,8 +1,6 @@
 package com.ufcg.psoft.mercadofacil.service;
 
-import com.ufcg.psoft.mercadofacil.model.Cliente;
-import com.ufcg.psoft.mercadofacil.model.Compra;
-import com.ufcg.psoft.mercadofacil.model.Resumo;
+import com.ufcg.psoft.mercadofacil.model.*;
 import com.ufcg.psoft.mercadofacil.repository.CompraRepository;
 import com.ufcg.psoft.mercadofacil.util.CustomErrorType;
 import com.ufcg.psoft.mercadofacil.util.ErroCliente;
@@ -75,9 +73,12 @@ public class CompraServiceImpl implements CompraService{
                 resumo.setComprado(true);
             }
         });
+
         compraService.salvarCompra(compra);
         clienteService.atualizaComprasCliente(compra, cliente);
         clienteService.limpaCarrinho(cliente);
+        FormaEntrega newFormaEntrega = new FormaEntregaRetirada();
+        clienteService.atualizaFormaEntrega(newFormaEntrega, cliente);
         clienteService.salvarClienteCadastrado(cliente);
 
 
