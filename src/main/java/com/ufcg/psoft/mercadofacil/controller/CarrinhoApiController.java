@@ -44,7 +44,7 @@ public class CarrinhoApiController {
     }
 
     @RequestMapping(value = "/carrinho/{idCliente}/{formaEntrega}", method = RequestMethod.POST)
-    public ResponseEntity<?> adicionaAoCarrinho(@PathVariable("idCliente") long idCliente, @PathVariable String formaEntrega) {
+    public ResponseEntity<?> modificaFormaEntrega(@PathVariable("idCliente") long idCliente, @PathVariable String formaEntrega) {
         return carrinhoService.modificaFormaEntrega(idCliente,formaEntrega);
     }
 

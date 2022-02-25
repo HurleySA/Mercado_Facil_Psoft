@@ -10,6 +10,10 @@ public class FormaEntregaRetirada extends FormaEntrega{
         super("Retirada", 0);
     }
 
+    public FormaEntregaRetirada(Calculo calculo) {
+        super("Retirada", 0, calculo);
+    }
+
     @Override
     public double calcular() {
         return 0 * getEstrategia().calcular();

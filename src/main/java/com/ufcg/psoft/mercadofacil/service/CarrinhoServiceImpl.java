@@ -184,14 +184,16 @@ public class CarrinhoServiceImpl implements CarrinhoService {
             throw new RuntimeException("Forma de entrega não cadastrado.");
         }
         FormaEntrega newFormaEntrega;
+        Calculo calculo = cliente.getCarrinho().getFormaEntrega().getEstrategia();
         if(formaEntrega.equals("Retirada")){
-            newFormaEntrega = new FormaEntregaRetirada();
+            newFormaEntrega = new FormaEntregaRetirada(calculo);
         }else if(formaEntrega.equals("Padrão")){
-            newFormaEntrega = new FormaEntregaPadrão();
+            newFormaEntrega = new FormaEntregaPadrão(calculo);
         } else{
-            newFormaEntrega = new FormaEntregaExpress();
+            newFormaEntrega = new FormaEntregaExpress(calculo);
         }
-        cliente.getCarrinho().setFormaEntrega(newFormaEntrega);
+        clienteService.atualizaFormaEntrega(newFormaEntrega, cliente);
+        clienteService.salvarClienteCadastrado(cliente);
 
         return new ResponseEntity<Cliente>(cliente, HttpStatus.OK);
     }

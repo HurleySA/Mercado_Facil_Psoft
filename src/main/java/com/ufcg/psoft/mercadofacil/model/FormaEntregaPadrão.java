@@ -10,6 +10,10 @@ public class FormaEntregaPadrão extends FormaEntrega{
         super("Padrão", 20);
     }
 
+    public FormaEntregaPadrão(Calculo calculo) {
+        super("Padrão", 20, calculo);
+    }
+
     @Override
     public double calcular() {
         return 20 * getEstrategia().calcular();
