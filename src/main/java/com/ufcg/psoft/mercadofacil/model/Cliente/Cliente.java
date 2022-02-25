@@ -1,6 +1,10 @@
-package com.ufcg.psoft.mercadofacil.model;
+package com.ufcg.psoft.mercadofacil.model.Cliente;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.ufcg.psoft.mercadofacil.model.Carrinho;
+import com.ufcg.psoft.mercadofacil.model.Compra;
+import com.ufcg.psoft.mercadofacil.model.FormaEntrega.FormaEntrega;
+import com.ufcg.psoft.mercadofacil.model.Resumo;
 
 import javax.persistence.*;
 import java.util.ArrayList;

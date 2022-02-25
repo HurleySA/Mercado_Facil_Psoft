@@ -1,9 +1,11 @@
 package com.ufcg.psoft.mercadofacil.service;
 
 import com.ufcg.psoft.mercadofacil.model.*;
+import com.ufcg.psoft.mercadofacil.model.Cliente.Cliente;
+import com.ufcg.psoft.mercadofacil.model.FormaEntrega.FormaEntrega;
+import com.ufcg.psoft.mercadofacil.model.FormaEntrega.FormaEntregaRetirada;
 import com.ufcg.psoft.mercadofacil.repository.CompraRepository;
 import com.ufcg.psoft.mercadofacil.util.CustomErrorType;
-import com.ufcg.psoft.mercadofacil.util.ErroCliente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
+
 @Service
 public class CompraServiceImpl implements CompraService{
     @Autowired
@@ -62,7 +64,6 @@ public class CompraServiceImpl implements CompraService{
                     if(resumo.getQuantidade() < loteService.getTotalByProduto(resumo.getProduto())){
                         loteService.atualizaLote(loteService.getLoteByProduto(resumo.getProduto()), resumo.getQuantidade());
                     }
-
                 }
 
         });

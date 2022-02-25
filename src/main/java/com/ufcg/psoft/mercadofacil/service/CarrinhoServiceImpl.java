@@ -1,10 +1,14 @@
 package com.ufcg.psoft.mercadofacil.service;
 
 import com.ufcg.psoft.mercadofacil.model.*;
+import com.ufcg.psoft.mercadofacil.model.Calculo.Calculo;
+import com.ufcg.psoft.mercadofacil.model.Cliente.Cliente;
+import com.ufcg.psoft.mercadofacil.model.FormaEntrega.FormaEntrega;
+import com.ufcg.psoft.mercadofacil.model.FormaEntrega.FormaEntregaExpress;
+import com.ufcg.psoft.mercadofacil.model.FormaEntrega.FormaEntregaPadrão;
+import com.ufcg.psoft.mercadofacil.model.FormaEntrega.FormaEntregaRetirada;
 import com.ufcg.psoft.mercadofacil.repository.CarrinhoRepository;
 import com.ufcg.psoft.mercadofacil.util.CustomErrorType;
-import com.ufcg.psoft.mercadofacil.util.ErroCliente;
-import com.ufcg.psoft.mercadofacil.util.ErroProduto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
@@ -83,15 +86,7 @@ public class CarrinhoServiceImpl implements CarrinhoService {
             throw new RuntimeException("Forma de entrega não cadastrado.");
         }
 
-        FormaEntrega newFormaEntrega;
-        if(formaEntrega.equals("Retirada")){
-            newFormaEntrega = new FormaEntregaRetirada();
-        }else if(formaEntrega.equals("Padrão")){
-            newFormaEntrega = new FormaEntregaPadrão();
-        } else{
-            newFormaEntrega = new FormaEntregaExpress();
-        }
-
+        FormaEntrega newFormaEntrega = getFormaEntregaByName(formaEntrega);
 
         List<Resumo> resumos = resumoService.getResumoByProduto(produto);
         Resumo resumo;
@@ -104,23 +99,10 @@ public class CarrinhoServiceImpl implements CarrinhoService {
                 }
 
                 int total = loteService.getTotalByProduto(produto);
-
-
                 if(numItens > total){
                     return new ResponseEntity<CustomErrorType>(new CustomErrorType("NÃO HÁ TANTAS UNIDADES DISPONÍVEL"), HttpStatus.BAD_REQUEST);
                 }
             }
-
-            resumo = resumoService.criaResumo(numItens, produto, cliente);
-            resumoService.salvarResumo(resumo);
-
-            List<Resumo> newResumos = resumoService.getResumoByCliente(cliente);
-            List<Resumo> resumosNaoComprados = resumoService.getResumosNaoComprados(newResumos);
-            newFormaEntrega.modificaEstrategia(resumosNaoComprados);
-
-            clienteService.atualizaResumosCliente(resumo, cliente);
-            clienteService.atualizaFormaEntrega(newFormaEntrega, cliente);
-            clienteService.salvarClienteCadastrado(cliente);
         }else{
             int total = loteService.getTotalByProduto(produto);
 
@@ -128,29 +110,34 @@ public class CarrinhoServiceImpl implements CarrinhoService {
             if(numItens > total){
                 return new ResponseEntity<CustomErrorType>(new CustomErrorType("NÃO HÁ TANTAS UNIDADES DISPONÍVEL"), HttpStatus.BAD_REQUEST);
             }
-
-            resumo = resumoService.criaResumo(numItens, produto, cliente);
-            resumoService.salvarResumo(resumo);
-
-            List<Resumo> newResumos = resumoService.getResumoByCliente(cliente);
-            List<Resumo> resumosNaoComprados = resumoService.getResumosNaoComprados(newResumos);
-            newFormaEntrega.modificaEstrategia(resumosNaoComprados);
-            clienteService.atualizaResumosCliente(resumo, cliente);
-            clienteService.atualizaFormaEntrega(newFormaEntrega, cliente);
-            clienteService.salvarClienteCadastrado(cliente);
         }
+        resumo = resumoService.criaResumo(numItens, produto, cliente);
+        resumoService.salvarResumo(resumo);
+        List<Resumo> newResumos = resumoService.getResumoByCliente(cliente);
+        List<Resumo> resumosNaoComprados = resumoService.getResumosNaoComprados(newResumos);
+        newFormaEntrega.modificaEstrategia(resumosNaoComprados);
+        clienteService.atualizaResumosCliente(resumo, cliente);
+        clienteService.atualizaFormaEntrega(newFormaEntrega, cliente);
+        clienteService.salvarClienteCadastrado(cliente);
 
         return new ResponseEntity<Cliente>(cliente, HttpStatus.CREATED);
+    }
+
+    private FormaEntrega getFormaEntregaByName(String formaEntrega) {
+        if(formaEntrega.equals("Retirada")){
+            return new FormaEntregaRetirada();
+        }else if(formaEntrega.equals("Padrão")){
+            return  new FormaEntregaPadrão();
+        } else{
+            return new FormaEntregaExpress();
+        }
     }
 
     @Override
     public ResponseEntity<?> removerResumoCadastradoByIds(long idCliente, long idProduto) {
         Cliente cliente = clienteService.getClienteById(idCliente);
-
         Produto produto = produtoService.getProdutoById(idProduto);
-
         List<Resumo> resumos = resumoService.getResumoByProduto(produto);
-
 
         if(resumos.isEmpty() ||  cliente.getCarrinho().getResumosPedidos().size() == 0  || resumoService.getResumoByProdutoAndCliente(produto, cliente).isEmpty()){
             return new ResponseEntity<CustomErrorType>(new CustomErrorType("NÃO TEM O ITEM NO CARRINHO."), HttpStatus.BAD_REQUEST);
@@ -161,9 +148,7 @@ public class CarrinhoServiceImpl implements CarrinhoService {
             resumoService.removerResumo(resumo);
 
         }
-
         return new ResponseEntity<Cliente>(cliente, HttpStatus.OK);
-
     }
 
     @Override

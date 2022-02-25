@@ -1,4 +1,10 @@
-package com.ufcg.psoft.mercadofacil.model;
+package com.ufcg.psoft.mercadofacil.model.FormaEntrega;
+
+import com.ufcg.psoft.mercadofacil.model.Calculo.Calculo;
+import com.ufcg.psoft.mercadofacil.model.Calculo.CalculoComum;
+import com.ufcg.psoft.mercadofacil.model.Calculo.CalculoFragil;
+import com.ufcg.psoft.mercadofacil.model.Calculo.CalculoRefrigeracao;
+import com.ufcg.psoft.mercadofacil.model.Resumo;
 
 import javax.persistence.*;
 import java.util.List;

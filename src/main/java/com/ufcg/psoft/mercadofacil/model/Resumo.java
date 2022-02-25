@@ -1,5 +1,7 @@
 package com.ufcg.psoft.mercadofacil.model;
 
+import com.ufcg.psoft.mercadofacil.model.Cliente.Cliente;
+
 import javax.persistence.*;
 
 @Entity

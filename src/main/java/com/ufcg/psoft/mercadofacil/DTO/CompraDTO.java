@@ -1,8 +1,6 @@
 package com.ufcg.psoft.mercadofacil.DTO;
 
-import com.ufcg.psoft.mercadofacil.model.Cliente;
-import com.ufcg.psoft.mercadofacil.model.Compra;
-import com.ufcg.psoft.mercadofacil.model.Produto;
+import com.ufcg.psoft.mercadofacil.model.Cliente.Cliente;
 import com.ufcg.psoft.mercadofacil.model.Resumo;
 
 import java.util.List;

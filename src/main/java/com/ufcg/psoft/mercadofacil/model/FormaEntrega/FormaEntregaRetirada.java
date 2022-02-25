@@ -1,5 +1,7 @@
-package com.ufcg.psoft.mercadofacil.model;
+package com.ufcg.psoft.mercadofacil.model.FormaEntrega;
 
+
+import com.ufcg.psoft.mercadofacil.model.Calculo.Calculo;
 
 import javax.persistence.Entity;
 

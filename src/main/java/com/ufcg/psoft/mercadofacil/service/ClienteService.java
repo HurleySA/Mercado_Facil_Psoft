@@ -4,11 +4,10 @@ import java.util.List;
 import java.util.Optional;
 
 import com.ufcg.psoft.mercadofacil.DTO.ClienteDTO;
-import com.ufcg.psoft.mercadofacil.model.Cliente;
+import com.ufcg.psoft.mercadofacil.model.Cliente.Cliente;
 import com.ufcg.psoft.mercadofacil.model.Compra;
-import com.ufcg.psoft.mercadofacil.model.FormaEntrega;
+import com.ufcg.psoft.mercadofacil.model.FormaEntrega.FormaEntrega;
 import com.ufcg.psoft.mercadofacil.model.Resumo;
-import com.ufcg.psoft.mercadofacil.util.CustomErrorType;
 import org.springframework.http.ResponseEntity;
 
 public interface ClienteService {

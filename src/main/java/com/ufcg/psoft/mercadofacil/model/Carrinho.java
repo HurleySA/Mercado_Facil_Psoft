@@ -1,5 +1,9 @@
 package com.ufcg.psoft.mercadofacil.model;
 
+import com.ufcg.psoft.mercadofacil.model.Cliente.Cliente;
+import com.ufcg.psoft.mercadofacil.model.FormaEntrega.FormaEntrega;
+import com.ufcg.psoft.mercadofacil.model.FormaEntrega.FormaEntregaRetirada;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;

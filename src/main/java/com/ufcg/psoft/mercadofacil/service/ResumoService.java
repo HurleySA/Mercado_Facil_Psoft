@@ -3,7 +3,7 @@ package com.ufcg.psoft.mercadofacil.service;
 import java.util.List;
 import java.util.Optional;
 
-import com.ufcg.psoft.mercadofacil.model.Cliente;
+import com.ufcg.psoft.mercadofacil.model.Cliente.Cliente;
 import com.ufcg.psoft.mercadofacil.model.Resumo;
 import com.ufcg.psoft.mercadofacil.model.Produto;
 import org.springframework.http.ResponseEntity;

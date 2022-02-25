@@ -1,13 +1,11 @@
 package com.ufcg.psoft.mercadofacil.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.ufcg.psoft.mercadofacil.model.Cliente.Cliente;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Entity
 public class Compra {

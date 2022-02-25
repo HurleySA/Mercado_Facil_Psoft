@@ -6,10 +6,11 @@ import java.util.Optional;
 
 
 import com.ufcg.psoft.mercadofacil.model.*;
-import com.ufcg.psoft.mercadofacil.model.ClienteEspecial;
-import com.ufcg.psoft.mercadofacil.model.ClienteNormal;
-import com.ufcg.psoft.mercadofacil.model.ClientePremium;
-import com.ufcg.psoft.mercadofacil.util.CustomErrorType;
+import com.ufcg.psoft.mercadofacil.model.Cliente.Cliente;
+import com.ufcg.psoft.mercadofacil.model.Cliente.ClienteEspecial;
+import com.ufcg.psoft.mercadofacil.model.Cliente.ClienteNormal;
+import com.ufcg.psoft.mercadofacil.model.Cliente.ClientePremium;
+import com.ufcg.psoft.mercadofacil.model.FormaEntrega.FormaEntrega;
 import com.ufcg.psoft.mercadofacil.util.ErroCliente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

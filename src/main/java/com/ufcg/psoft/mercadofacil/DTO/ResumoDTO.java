@@ -1,6 +1,6 @@
 package com.ufcg.psoft.mercadofacil.DTO;
 
-import com.ufcg.psoft.mercadofacil.model.Cliente;
+import com.ufcg.psoft.mercadofacil.model.Cliente.Cliente;
 import com.ufcg.psoft.mercadofacil.model.Produto;
 
 public class ResumoDTO {
