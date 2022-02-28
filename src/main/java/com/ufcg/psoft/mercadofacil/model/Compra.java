@@ -155,4 +155,4 @@ public class Compra {
 
     public void removeResumo(Resumo resumo) { resumos.remove(resumo);}
 
-}''
+}
