@@ -10,14 +10,6 @@ public abstract class Calculo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    public String getEstrategiaName() {
-        return estrategiaName;
-    }
-
-    public void setEstrategiaName(String estrategiaName) {
-        this.estrategiaName = estrategiaName;
-    }
-
     private String estrategiaName;
 
     public Calculo(){}
@@ -28,12 +20,11 @@ public abstract class Calculo {
 
     public abstract  double calcular();
 
-    public void setId(Long id) {
-        this.id = id;
+    public String getEstrategiaName() {
+        return estrategiaName;
     }
 
-
-    public Long getId() {
-        return id;
+    public void setEstrategiaName(String estrategiaName) {
+        this.estrategiaName = estrategiaName;
     }
 }

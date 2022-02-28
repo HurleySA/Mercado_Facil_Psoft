@@ -74,9 +74,4 @@ public class Carrinho {
                 "resumosPedidos=" + resumosPedidos +
                 '}';
     }
-
-
-    public void modificaFormaEntrega(String formaEntrega) {
-        this.formaEntrega.setTipoEntrega(formaEntrega);
-    }
 }

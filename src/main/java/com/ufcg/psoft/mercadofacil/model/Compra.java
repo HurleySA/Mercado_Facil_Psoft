@@ -66,16 +66,6 @@ public class Compra {
         return total;
     }
 
-    protected double getTotalDescontosPerfilItens(double total, int totalItem, String perfil){
-        if(perfil.equals("Especial") && totalItem > 10 ){
-            total *= 0.5;
-        };
-        if(perfil.equals("Premium") && totalItem > 5){
-            total *= 0.5;
-        };
-        return total;
-    }
-
     protected double getTotalDescontos(double total, int totalItem, String formaPagamento, String perfil){
         double totalFormaPagamento = getTotalFormaPagamento(total, formaPagamento);
         double totalDescontos = cliente.descontoCompras(totalFormaPagamento, totalItem);
@@ -165,4 +155,4 @@ public class Compra {
 
     public void removeResumo(Resumo resumo) { resumos.remove(resumo);}
 
-}
+}''
